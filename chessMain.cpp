@@ -1,4 +1,4 @@
-#include"ChessGame.h"
+#include"chessGame.h"
 
 #include<iostream>
 

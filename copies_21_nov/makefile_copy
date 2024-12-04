@@ -1,0 +1,14 @@
+chess: chessMain.o .o chessGame.o
+	g++ -g main.o time.o ChessGame.o -o chess
+
+chessMain.o: chessMain.cpp chessGame.h
+	g++ -Wall -g -c main.cpp
+
+chessGame.o: chessGame.cpp chessPiece.h chessGame.h
+	g++ -Wall -g -c chessGame.cpp
+
+chessPiece.o: chessPiece.cpp chessPiece.h
+	g++ -Wall -g -c chessPiece.cpp
+
+clean:
+	rm -f *.o chess
