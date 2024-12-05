@@ -1,8 +1,9 @@
-x#include <iostream>
+#include <iostream>
 #include <cstring>
 #include <cctype>
 #include "chessGame.h"
-#include "chessPiece.h" //chessPiece.h will contain the header files for the
+#include "chessPiece.h"
+#include "pawn.h" //chessPiece.h will contain the header files for the
 			//individual pieces so this is all I need to bring in?
 
 using namespace std;
@@ -17,7 +18,7 @@ ostream& operator << (ostream &out, const ChessGame * cg){
       {
 	if (cg->chessBoard[i][j] != nullptr)
 	  {
-	    out << (cg->chessBoard[i][j]); //I will need overloading for the
+	    out << cg->chessBoard[i][j]->getPieceName() << " "; //I will need overloading for the
 					   //pieces output.
 	  }
 	else
@@ -31,9 +32,18 @@ ostream& operator << (ostream &out, const ChessGame * cg){
       return out;
 }
 
+std::ostream& operator << ( std::ostream &out, const Turn& turn)
+{
+ if(turn == Turn::BLACK){
+  out << "BLACK";
+ } else {
+  out << "WHITE";
+ }
+ return out;
+}
 
 
-ChessGame::ChessGame() : isWhitesTurn(true) // do I need to set it to null when I initialise?)
+ChessGame::ChessGame() : playerToMove(Turn::WHITE) // do I need to set it to null when I initialise?)
 {
   // initialise chessBoard to be nul pointers. 
   for (int i = 0; i < 8; i++)
@@ -124,47 +134,48 @@ void ChessGame::loadState(const char fen[]) //could use states (look at in
     }
 
   cout << "\n" << "exiting loop" << endl;
-  // cout << this;
-  //cout << playerToMove << " turn" << endl; - make work to testcolour. 
+  cout << this;
+  cout << "current turn: " << playerToMove << endl;
+
 
 }
 
-ChessPiece * ChessGame:: placePiece(const char fen);
+ChessPiece * ChessGame:: placePiece(const char fen)
 {
+int string_case= isupper(fen);
+PieceColour colour = static_cast<PieceColour>(string_case);
 
-  ChessPiece::Colour PieceColour = static_cast<PieceColour>(isupper(fen));
-
-  ChessPiece * new_piece = null;
+  ChessPiece * new_piece = nullptr;
 
   switch(toupper(fen)){
   case 'R':
-    new_piece = new Rook(PieceColour);
+   // new_piece = new Rook(colour);
     break;
   case 'N':
-    new_piece = new Knight(PieceColour);
+   // new_piece = new Knight(colour);
     break;
   case 'B':
-    new_piece = new Bishop(PieceColour);
+    //new_piece = new Bishop(colour);
     break;
   case 'Q':
-    new_piece = new Queen(PieceColour);
+    //new_piece = new Queen(colour);
     break;
   case 'K':
-    new_piece = new King(PieceColour);
+    //new_piece = new King(colour);
     break;
   case 'P':
-    new_piece = new Pawn(Piececolour);
+    new_piece = new Pawn(colour);
+    break;
   }
   return new_piece;
 }
 
-void ChessGame::assignTurn(const char fen);
+void ChessGame::assignTurn(const char fen)
 {
   if (fen == 'w')
     playerToMove = Turn::WHITE;
   else
     playerToMove = Turn::BLACK;
-
 }
 
 void ChessGame::submitMove( const char whiteMove[], const char blackMove[])

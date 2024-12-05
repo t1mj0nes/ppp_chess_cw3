@@ -21,7 +21,7 @@ int main() {
 	cout << '\n';
 
 	cg.submitMove("D2", "D4");
-	cout << '\n';
+	cout << '\n';	
 
 	cg.submitMove("F8", "B4");
 	cout << '\n';

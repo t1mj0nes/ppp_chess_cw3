@@ -1,6 +1,9 @@
-#include "chessPice.h"
+#include "chessPiece.h"
 
-using namespace std
+using namespace std;
 
-ChessPiece::ChesPiece()
+ChessPiece::ChessPiece(PieceColour BlackOrWhite) : colour(BlackOrWhite)
 {}
+
+
+

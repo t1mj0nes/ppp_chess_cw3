@@ -15,6 +15,8 @@
  */
 enum class Turn {BLACK, WHITE};
 
+std::ostream& operator<< ( std::ostream &out, const Turn& turn);
+
 
 class ChessGame {
 
@@ -28,7 +30,7 @@ class ChessGame {
 
   // support function for personal use (Delete later!)
   friend std::ostream& operator<< ( std::ostream &out, const ChessGame* cg); // refer to safe
-								// array example
+
   //does this need to be a pointer to ChesGame 
 
  private:

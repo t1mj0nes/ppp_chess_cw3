@@ -1,6 +1,8 @@
 #ifndef CHESSPIECE_H
 #define CHESSPIECE_H
 
+#
+
 
 /**
  * @enum colour.
@@ -13,10 +15,14 @@ enum class PieceColour {BLACK, WHITE};
 class ChessPiece {
 
 public:
-  ChessPiece();
+  ChessPiece(PieceColour colour);
 
-private:
-  // colour make an enumof 
+  virtual bool isValidPieceMove(const char position, const char target) = 0;
+  
+  virtual const char* getPieceName() const = 0;
+
+protected:
+   PieceColour colour;
 
 };
 
