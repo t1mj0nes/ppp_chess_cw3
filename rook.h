@@ -1,23 +1,23 @@
-#ifndef PAWN_H
-#define PAWN_H
+#ifndef ROOK_H
+#define ROOK_H
 #include "chessPiece.h"
 
 using namespace std;
 
 
-class Pawn : public ChessPiece {
+class Rook : public ChessPiece {
 
 public:
 
-    Pawn(PieceColour colour);
+    Rook(PieceColour colour);
 
     bool isValidPieceMove(const char position, const char target) override;
 
     const char* getPieceName() const override {
       if(colour == PieceColour::WHITE){
-        return "WP";
+        return "WR";
       } else if (colour == PieceColour::BLACK){
-        return "bp";
+        return "br";
         }
         return "Unknown";
 
@@ -27,4 +27,3 @@ public:
 };
 
 #endif
-

@@ -1,23 +1,23 @@
-#ifndef PAWN_H
-#define PAWN_H
+#ifndef BISHOP_H
+#define BISHOP_H
 #include "chessPiece.h"
 
 using namespace std;
 
 
-class Pawn : public ChessPiece {
+class Bishop : public ChessPiece {
 
 public:
 
-    Pawn(PieceColour colour);
+    Bishop(PieceColour colour);
 
     bool isValidPieceMove(const char position, const char target) override;
 
     const char* getPieceName() const override {
       if(colour == PieceColour::WHITE){
-        return "WP";
+        return "WB";
       } else if (colour == PieceColour::BLACK){
-        return "bp";
+        return "bb";
         }
         return "Unknown";
 
@@ -27,4 +27,3 @@ public:
 };
 
 #endif
-

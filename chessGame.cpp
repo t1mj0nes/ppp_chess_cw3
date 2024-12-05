@@ -2,8 +2,14 @@
 #include <cstring>
 #include <cctype>
 #include "chessGame.h"
-#include "chessPiece.h"
-#include "pawn.h" //chessPiece.h will contain the header files for the
+#include "chessPiece.h"//remove if I have all the other pieces? 
+#include "bishop.h"
+#include "king.h"
+#include "knight.h"
+#include "pawn.h" 
+#include "queen.h"
+#include "rook.h"
+//chessPiece.h will contain the header files for the
 			//individual pieces so this is all I need to bring in?
 
 using namespace std;
@@ -23,7 +29,7 @@ ostream& operator << (ostream &out, const ChessGame * cg){
 	  }
 	else
 	  {
-	    out << "."; //. instead where nullpointers are.
+	    out << " . "; //. instead where nullpointers are.
 	  }
 	  
       }
@@ -142,26 +148,26 @@ void ChessGame::loadState(const char fen[]) //could use states (look at in
 
 ChessPiece * ChessGame:: placePiece(const char fen)
 {
-int string_case= isupper(fen);
-PieceColour colour = static_cast<PieceColour>(string_case);
+
+PieceColour colour = isupper(fen) ? PieceColour::WHITE : PieceColour::BLACK;
 
   ChessPiece * new_piece = nullptr;
 
   switch(toupper(fen)){
   case 'R':
-   // new_piece = new Rook(colour);
+   new_piece = new Rook(colour);
     break;
   case 'N':
-   // new_piece = new Knight(colour);
+   new_piece = new Knight(colour);
     break;
   case 'B':
-    //new_piece = new Bishop(colour);
+    new_piece = new Bishop(colour);
     break;
   case 'Q':
-    //new_piece = new Queen(colour);
+    new_piece = new Queen(colour);
     break;
   case 'K':
-    //new_piece = new King(colour);
+    new_piece = new King(colour);
     break;
   case 'P':
     new_piece = new Pawn(colour);
