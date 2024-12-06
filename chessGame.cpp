@@ -18,13 +18,13 @@ using namespace std;
 
 // this is set up for pointers, but it will be letters rather than pointers to positions
 ostream& operator << (ostream &out, const ChessGame * cg){
-  for (int i = 0; i < 8; i++)
+  for (int row = 0; row < 8; row++)
     {
-    for (int j = 0; j < 8; j++)
+    for (int col = 0; col < 8; col++)
       {
-	if (cg->chessBoard[i][j] != nullptr)
+	if (cg->chessBoard[row][col] != nullptr)
 	  {
-	    out << cg->chessBoard[i][j]->getPieceName() << " "; //I will need overloading for the
+	    out << cg->chessBoard[row][col]->getPieceName() << " "; //I will need overloading for the
 					   //pieces output.
 	  }
 	else
@@ -75,7 +75,7 @@ void ChessGame::loadState(const char fen[]) //could use states (look at in
   //  is the position within the fen string.
   int n = 0;
 
-  int row_counter = 0;
+  int row_counter = 7;
   int col_counter = 0;
 
   while (fen[n] != '\0')
@@ -104,7 +104,7 @@ void ChessGame::loadState(const char fen[]) //could use states (look at in
 	      }
 	    else if (fen[n] == '/')
 	      {
-		row_counter++;
+		row_counter--;
 		//reset column counter
 		col_counter = 0;
 	      }
@@ -125,7 +125,7 @@ void ChessGame::loadState(const char fen[]) //could use states (look at in
 	     if (fen[n] == ' ')
 	      {
 		currentState=FenState::CASTLING;
-		cout << "switch state to CASTLING";
+		cout << " switch state to CASTLING ";
 	      }
 	      n++;
 	     break; 
@@ -184,7 +184,130 @@ void ChessGame::assignTurn(const char fen)
     playerToMove = Turn::BLACK;
 }
 
-void ChessGame::submitMove( const char whiteMove[], const char blackMove[])
+void ChessGame::submitMove( const char initialPosition[], const char targetPosition[])
 {
+//check if these exceed the board, or are smaller then the board.
+	int initial_row_number = initialPosition[1] - '0' - 1;
+  	int initial_col_number = initialPosition[0] - 'A';
+	int target_row_number = targetPosition[1] - '0' - 1;
+	int target_col_number = targetPosition[0] - 'A';
+    bool isCapture;
+    ChessPiece* piece =chessBoard[initial_row_number][initial_col_number];
+
+	cout << initial_col_number << " " << initial_row_number << " " << endl;
+    cout << "chess board position " << initialPosition << endl;
+
+	cout << "current turn: " << playerToMove << endl;
+
+
+	if (chessBoard[target_row_number][target_col_number] != nullptr) {
+          isCapture = true;
+        }
+        else
+          isCapture =false;
+	// detecting if there is a piece there.
+	if (piece == nullptr) {
+  		cout << "There is no piece at position " << initialPosition << endl;
+		return;
+	}
+        // trying to move a pice of the wrong turn - reword
+    else if ((static_cast<int>(piece->getPieceColour())) != (static_cast<int>(playerToMove))) {
+          cout << "It is not " << piece->getPieceColour()
+				<< "'s turn to move!" <<endl;
+          return;
+    }
+        // attempting to take own piece
+	else if ((isCapture == true) &&
+        ((piece->getPieceColour())
+         == (chessBoard[target_row_number][target_col_number]->getPieceColour()))) {
+          cout << "invalid move, attempting to take its own piece" << endl;
+          return;
+	}
+   else {
+    	if (piece->isValidPieceMove(initial_row_number, initial_col_number, target_row_number, target_col_number, isCapture) && (isBoardClear(initial_row_number, initial_col_number, target_row_number, target_col_number)))
+			cout << "valid move" << endl;
+    }
+
+
+
+
+
+
+
   cout << "make move" << endl;
+
+	//put all of this into one function and then call that with both whiteMove and blackMove
+
+
+
+	//bool piceValidMove =
+ cout << this;
+ cout << "current turn: " << playerToMove << endl;
+
+ return;
+
 }
+
+bool ChessGame::isBoardClear(const int initial_row_number, const int initial_col_number, const int target_row_number, const int target_col_number)
+{
+  // check if i move of a knight, doesn't need to b checkd.
+ if (((abs(target_row_number - initial_row_number) == 2) && (abs(target_col_number - initial_col_number) == 1)) || (
+      abs(target_row_number - initial_row_number) == 1 && (abs(target_col_number - initial_col_number) == 2)))
+	return true;
+
+//these all need step in - are they incrementing or decrementing, then that can be applied to the loop.
+
+
+int rowDiff = (target_row_number - initial_row_number);
+int colDiff = (target_col_number - initial_col_number);
+
+int rowStep = (rowDiff > 0) ? 1 : -1;
+int colStep = (colDiff > 0) ? 1 : -1;
+
+ if (target_row_number - initial_row_number == 0) {
+   for (int column = initial_col_number + colStep; column != target_col_number; column += colStep){
+     if (chessBoard[target_row_number][column] != nullptr)
+       return false;
+     }
+ }
+ else if (target_col_number - initial_col_number == 0) {
+   for (int row = initial_row_number + rowStep; row != target_row_number; row += rowStep){
+     if (chessBoard[rowStep][target_col_number] != nullptr)
+       return false;
+     }
+  }
+ else if (abs((target_row_number - initial_row_number)/(target_col_number - initial_col_number)) == 1) {
+ 		int row = initial_row_number + rowStep;
+ 		int column = initial_col_number + colStep;
+        while (row != target_row_number && column != target_col_number) {
+          if (chessBoard[row][column] != nullptr){
+            return false;
+           }
+           row = row + rowStep;
+           column = column + colStep;
+       	}
+    }
+  return true;
+}
+
+
+
+ChessGame::~ChessGame(){
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      delete chessBoard[i][j];
+      chessBoard[i][j] = nullptr;
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+

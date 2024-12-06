@@ -19,7 +19,7 @@ knight.o: knight.cpp knight.h chessPiece.h
 pawn.o: pawn.cpp pawn.h chessPiece.h
 	g++ -Wall -g -c pawn.cpp
 
-quuen.o: queen.cpp queen.h chessPiece.h
+queen.o: queen.cpp queen.h chessPiece.h
 	g++ -Wall -g -c queen.cpp
 
 rook.o: rook.cpp rook.h chessPiece.h

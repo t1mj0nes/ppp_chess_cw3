@@ -26,16 +26,18 @@ class ChessGame {
   
   void loadState(const char fen[]); //simliar initialisatin to sudoku (i.e. its a char array
 
-  void submitMove(const char whiteMove[], const char blackMove[]);
+  void submitMove(const char initialPosition[], const char targetPosition[]);
 
   // support function for personal use (Delete later!)
   friend std::ostream& operator<< ( std::ostream &out, const ChessGame* cg); // refer to safe
 
-  //does this need to be a pointer to ChesGame 
+  virtual ~ChessGame();
 
  private:
 
   void assignTurn(const char fen);
+
+  bool isBoardClear(const int initial_row_number, const int initial_col_number, const int target_row_number, const int target_col_number);
 
   ChessPiece * placePiece(const char fen);
   

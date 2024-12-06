@@ -1,8 +1,9 @@
 #ifndef PAWN_H
 #define PAWN_H
 #include "chessPiece.h"
+#include <iostream> //remove
 
-using namespace std;
+
 
 
 class Pawn : public ChessPiece {
@@ -11,7 +12,8 @@ public:
 
     Pawn(PieceColour colour);
 
-    bool isValidPieceMove(const char position, const char target) override;
+  bool isValidPieceMove(const int start_row, const int start_col, const int target_row, const int target_col,
+                         const bool isCapture) const override;
 
     const char* getPieceName() const override {
       if(colour == PieceColour::WHITE){
@@ -21,8 +23,12 @@ public:
         }
         return "Unknown";
 
-
       }
+
+
+  ~Pawn() override{
+  std::cout << "Destructor Pawn" << std::endl;
+  }
 
 };
 
