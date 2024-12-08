@@ -6,8 +6,13 @@ using namespace std;
 
 Rook::Rook(PieceColour colour): ChessPiece(colour){}
 
-bool Rook::isValidPieceMove(const int start_row, const int start_col, const int target_row, const int target_col,
+bool Rook::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const
-  {
-    return true;
-  }
+{
+ // Check if the move is diagonal by checking if the absolute differences in rows and columns are equall
+    if (targetRow == startRow|| targetCol == startCol) {
+        return true;
+    }
+    // cout << "Invalid move: The move is not horizontal or vertical." << endl;
+    return false;
+}

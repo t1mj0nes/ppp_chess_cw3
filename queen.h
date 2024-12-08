@@ -11,7 +11,7 @@ public:
 
     Queen(PieceColour colour);
 
-   bool isValidPieceMove(const int start_row, const int start_col, const int target_row, const int target_col,
+   bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const override;
     const char* getPieceName() const override {
       if(colour == PieceColour::WHITE){

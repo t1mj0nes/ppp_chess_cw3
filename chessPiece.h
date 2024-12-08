@@ -19,9 +19,7 @@ class ChessPiece {
 public:
   ChessPiece(PieceColour colour);
 
-  virtual bool isValidPieceMove(const int start_row, const int start_col, const int target_row, const int target_col, const bool isCapture) const = 0;
-
-
+  virtual bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol, const bool isCapture) const = 0;
 
    //change this at the end so it is just "king"
   virtual const char* getPieceName() const = 0;

@@ -7,32 +7,36 @@ using namespace std;
 
 Pawn::Pawn(PieceColour colour): ChessPiece(colour){}
 
-bool Pawn::isValidPieceMove(const int start_row, const int start_col, const int target_row, const int target_col,
+bool Pawn::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const
   {
+    // cout << "checking if valid piece move for pawn" << endl;
   PieceColour colour = getPieceColour();
   // white pawns move up the board, black pawns move down the board.
   int directionScalar = (colour == PieceColour::WHITE) ? 1 : -1;
 
 
-    if (!isCapture)
-      {
-      if (((target_row - start_row) == (directionScalar)) && (target_col == start_col))
-        	return true;
-      // check if the pawn han't made a move
-      if ((((directionScalar == 1) && (start_row == 1)) || ((directionScalar == -1) && (start_row == 6)))
-           && ((target_row - start_row) == (2 * directionScalar)) && (target_col == start_col))
-          	return true;
+    if (!isCapture) {
+      if (((targetRow - startRow) == (directionScalar)) && (targetCol == startCol)) {
+        // cout << "valid pawn move" << endl;
+        return true;
+      }
+       // check if the pawn han't made a move
+       else if ((((directionScalar == 1) && (startRow == 1)) || ((directionScalar == -1) && (startRow == 6)))
+           && ((targetRow - startRow) == (2 * directionScalar)) && (targetCol == startCol)) {
+             // cout << "valid pawn move" << endl;
+             return true;
+            }
+     }
+      // if capturing a piece, the pawn can move horizontal.
+     if (isCapture) {
+       if (((targetRow - startRow) == (directionScalar)) && ((targetCol == startCol + 1) ||
+                                                               (targetCol == startCol - 1))) {
+            // cout << "valid pawn move" << endl;
+            return true;
+           }
      }
 
-     if (isCapture)
-     {
-       if (((target_row - start_row) == (directionScalar)) && ((target_col == start_col + 1) ||
-                                                               (target_col == start_col - 1)))
-           return true;
-     }
-
+  // cout << "invalid pawn move" << endl;
   return false;
-
-
 }

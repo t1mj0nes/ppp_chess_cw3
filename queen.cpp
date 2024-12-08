@@ -6,8 +6,17 @@ using namespace std;
 
 Queen::Queen(PieceColour colour): ChessPiece(colour){}
 
-bool Queen::isValidPieceMove(const int start_row, const int start_col, const int target_row, const int target_col,
-                          const bool isCapture) const
-  {
-    return true;
-  }
+bool Queen::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
+                          const bool isCapture) const {
+    // Diagonal move 
+    if (abs(startRow - targetRow) == abs(startCol - targetCol)) {
+        return true;
+    }
+    
+    // Straight line move 
+    if (startRow == targetRow || startCol == targetCol) {
+        return true;
+    }
+    
+    return false;
+}  

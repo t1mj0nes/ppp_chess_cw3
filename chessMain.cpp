@@ -5,7 +5,6 @@
 using std::cout;
 
 int main() {
-
 	cout << "========================\n";
 	cout << "Testing the Chess Engine\n";
 	cout << "========================\n\n";
@@ -26,21 +25,10 @@ int main() {
 	cg.submitMove("F8", "B4");
 	cout << '\n';
 
-
-    // Personal tests
-    //Pawn
-      /*
-        cg.submitMove("E7", "E6");
-        cout << '\n';
-
-        cg.submitMove("D4", "D5");
-        cout << '\n';
-        cg.submitMove("D8", "D8");
-        */
-/*
 	cout << "=========================\n";
 	cout << "Alekhine vs. Vasic (1931)\n";
 	cout << "=========================\n\n";
+
 
 	cg.loadState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
 	cout << '\n';
@@ -87,6 +75,6 @@ int main() {
 
 	cg.submitMove("D3", "G6");
 	cout << '\n';
-*/
+
 	return 0;
 }
