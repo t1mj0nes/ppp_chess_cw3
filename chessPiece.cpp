@@ -1,21 +1,11 @@
 #include "chessPiece.h"
+#include "colour.h"
 
 using namespace std;
 
-ChessPiece::ChessPiece(PieceColour BlackOrWhite) : colour(BlackOrWhite)
+ChessPiece::ChessPiece(Colour _pieceColour) : pieceColour(_pieceColour)
 {}
 
-std::ostream& operator<< ( std::ostream &out, const PieceColour& colour)
-{
- if(colour == PieceColour::BLACK){
-  out << "BLACK";
- } else {
-  out << "WHITE";
- }
- return out;
-}
-
-
-const PieceColour ChessPiece::getPieceColour() const{
-    return colour;
+const Colour ChessPiece::getPieceColour() const{
+    return pieceColour;
     }

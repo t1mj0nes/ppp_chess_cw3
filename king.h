@@ -1,22 +1,24 @@
 #ifndef KING_H
 #define KING_H
-#include "chessPiece.h"
 #include <iostream> //remove
+#include "colour.h"
+#include "chessPiece.h"
+
 
 class King : public ChessPiece {
 
 public:
 
-    King(PieceColour colour);
+    King(Colour pieceColour);
 
    bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const override;
 
     // rename
     const char* getPieceName() const override {
-      if(colour == PieceColour::WHITE){
+      if(pieceColour == Colour::WHITE){
         return "WK";
-      } else if (colour == PieceColour::BLACK){
+      } else if (pieceColour == Colour::BLACK){
         return "bk";
         }
         return "Unknown";

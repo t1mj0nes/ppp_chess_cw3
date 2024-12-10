@@ -1,21 +1,22 @@
 #ifndef ROOK_H
 #define ROOK_H
-#include "chessPiece.h"
 #include <iostream> //remove
+#include "chessPiece.h"
+#include "colour.h"
 
 
 class Rook : public ChessPiece {
 
 public:
 
-    Rook(PieceColour colour);
+    Rook(Colour pieceCcolour);
 
    bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const override;
     const char* getPieceName() const override {
-      if(colour == PieceColour::WHITE){
+      if(pieceColour == Colour::WHITE){
         return "WR";
-      } else if (colour == PieceColour::BLACK){
+      } else if (pieceColour == Colour::BLACK){
         return "br";
         }
         return "Unknown";

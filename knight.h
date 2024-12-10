@@ -1,20 +1,21 @@
 #ifndef KNIGHT_H
 #define KNIGHT_H
 #include "chessPiece.h"
+#include "colour.h"
 #include <iostream> //remove
 
 class Knight : public ChessPiece {
 
 public:
 
-    Knight(PieceColour colour);
+    Knight(Colour pieceColour);
 
    bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const override;
     const char* getPieceName() const override {
-      if(colour == PieceColour::WHITE){
+      if(pieceColour == Colour::WHITE){
         return "WN";
-      } else if (colour == PieceColour::BLACK){
+      } else if (pieceColour == Colour::BLACK){
         return "bn";
         }
         return "Unknown";

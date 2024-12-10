@@ -1,19 +1,20 @@
 #include <iostream>
 #include <cmath>
 #include "pawn.h"
+#include "colour.h"
 
 
 using namespace std;
 
-Pawn::Pawn(PieceColour colour): ChessPiece(colour){}
+Pawn::Pawn(Colour pieceColour): ChessPiece(pieceColour){}
 
 bool Pawn::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const
   {
     // cout << "checking if valid piece move for pawn" << endl;
-  PieceColour colour = getPieceColour();
+  Colour pieceColour = getPieceColour();
   // white pawns move up the board, black pawns move down the board.
-  int directionScalar = (colour == PieceColour::WHITE) ? 1 : -1;
+  int directionScalar = (pieceColour == Colour::WHITE) ? 1 : -1;
 
 
     if (!isCapture) {

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-King::King(PieceColour colour): ChessPiece(colour){}
+King::King(Colour pieceColour): ChessPiece(pieceColour){}
 
 bool King::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const

@@ -3,6 +3,7 @@
 #include <cctype>
 #include "chessGame.h"
 #include "chessPiece.h"//remove if I have all the other pieces? 
+#include "colour.h"
 #include "bishop.h"
 #include "king.h"
 #include "knight.h"
@@ -34,30 +35,43 @@ ostream& operator << (ostream &out, const ChessGame * cg) {
       return out;
 }
 
-std::ostream& operator << ( std::ostream &out, const Turn& turn)
+ChessGame::ChessGame()
 {
- if(turn == Turn::BLACK) {
-  out << "BLACK";
- } else {
-  out << "WHITE";
- }
- return out;
+  resetGame();
 }
 
+void ChessGame::resetGame(){
 
-ChessGame::ChessGame() : playerToMove(Turn::WHITE), whiteKingPosition(-1, -1), blackKingPosition(-1, -1)// do I need to set it to null when I initialise?. king position to 0,0)
-{
-  // initialise chessBoard to be nul pointers. 
+
+  //set king default position to not on the board
+  whiteKingPosition = {-1, -1};
+  blackKingPosition = {-1, -1};
+
+  // set default to castling not being allowed
+  whiteCastling = {false, false};
+  blackCastling = {false, false};
+
+
+  //default is that white starts
+  activeColour = Colour::WHITE;
+
+  // set the board to be empty
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      chessBoard[i][j] = nullptr; //nullptr
+      chessBoard[i][j] = nullptr;
     }
   }
-  cout << "chess Game initialised" << endl;
+
+  resetRequired = false;
 }
 
 void ChessGame::loadState(const char fen[]) 
 {
+
+  if(resetRequired)
+  {
+    resetGame();
+  }
 
   enum class FenState{PIECE_PLACEMENT, ACTIVE_COLOUR, CASTLING}; //insde the
 								//funciton or not.
@@ -74,64 +88,70 @@ void ChessGame::loadState(const char fen[])
 
   while (fen[n] != '\0') {
       switch (currentState)
-	{
-	case FenState::PIECE_PLACEMENT:
 	  {
-	    // check if a letter 
-	    if(isalpha(fen[n])) {
-        chessBoard[rowCounter][colCounter] = placePiece(fen[n]);
-        if ((fen[n] == 'K') || (fen[n] == 'k')){
-          assignKing(fen[n], rowCounter, colCounter);
-        }
+    case FenState::PIECE_PLACEMENT:
+      {
+        // check if a letter 
+        if(isalpha(fen[n])) {
+          chessBoard[rowCounter][colCounter] = placePiece(fen[n]);
+          if ((fen[n] == 'K') || (fen[n] == 'k')){
+            //this is the same as update king position, so do this step in the placePiece part. 
+            updateKingPosition(static_cast<King*>(chessBoard[rowCounter][colCounter]), rowCounter, colCounter);
+          }
 
-        colCounter--;
-	      }
-	    //if number, empty space
-	    else if (isdigit(fen[n])) {
-		int no_empty_space = fen[n] - '0';
-		for(int k = 0; k < no_empty_space; k++) {
-		    // reset to null again if playin
-		    // setting it to null above necessary?) 
-		    chessBoard[rowCounter][colCounter] = nullptr;
-		    colCounter--;
-		  }
-	      }
-	    else if (fen[n] == '/') {
-		rowCounter--;
-		//reset column counter
-		colCounter = 7;
-	      }
-	    else if (fen[n] == ' ')  {
-		currentState = FenState::ACTIVE_COLOUR;
-		cout << "switch state to ACTIVE_COLOUR";
-	      }
-	    n++;
-	    break;
-	  }
-	   case FenState::ACTIVE_COLOUR:
-	  {
-	    if (isalpha(fen[n])) {
-		assignTurn(fen[n]);
-	      }
-	     if (fen[n] == ' ') {
-		currentState=FenState::CASTLING;
-		cout << " switch state to CASTLING ";
-	      }
-	      n++;
-	     break; 
-	  }
-	case FenState::CASTLING:
-	  {
-	    cout << fen[n];
-	    n++;
-	    break; 
-	  }
+          colCounter--;
+          }
+        //if number, empty space
+        else if (isdigit(fen[n])) {
+      int no_empty_space = fen[n] - '0';
+      for(int k = 0; k < no_empty_space; k++) {
+          // empty spaces are ignored and kept as null pointers. 
+          colCounter--;
+        }
+          }
+        else if (fen[n] == '/') {
+      rowCounter--;
+      //reset column counter
+      colCounter = 7;
+          }
+        else if (fen[n] == ' ')  {
+      currentState = FenState::ACTIVE_COLOUR;
+      cout << "switch state to ACTIVE_COLOUR";
+          }
+        n++;
+        break;
+      }
+      case FenState::ACTIVE_COLOUR:
+      {
+        if (isalpha(fen[n])) {
+      assignTurn(fen[n]);
+          }
+        if (fen[n] == ' ') {
+      currentState=FenState::CASTLING;
+      cout << " switch state to CASTLING ";
+          }
+          n++;
+        break; 
+      }
+    case FenState::CASTLING:
+      {
+        assignCastling(fen[n]);
+        cout << fen[n];
+        n++;
+        break; 
       }
     }
+  }
 
+  //new game state has been loaded. If a new game is loaded, the game needs to be reset. 
+  resetRequired = true;
+
+  cout << "white kingside castling: " << whiteCastling.first << "queenside: " << whiteCastling.second 
+       << "black kingside castling: " <<  blackCastling.first << "blackside: " << blackCastling.second << endl;
+       
   cout << "\n" << "exiting loop" << endl;
   cout << this;
-  cout << "current turn: " << playerToMove << endl;
+  cout << "current turn: " << activeColour << endl;
 
 
 }
@@ -139,56 +159,75 @@ void ChessGame::loadState(const char fen[])
 ChessPiece * ChessGame:: placePiece(const char fen)
 {
 
-PieceColour colour = isupper(fen) ? PieceColour::WHITE : PieceColour::BLACK;
+  Colour pieceColour = isupper(fen) ? Colour::WHITE : Colour::BLACK;
 
   ChessPiece * new_piece = nullptr;
 
   switch(toupper(fen)){
   case 'R':
-   new_piece = new Rook(colour);
+   new_piece = new Rook(pieceColour);
     break;
   case 'N':
-   new_piece = new Knight(colour);
+   new_piece = new Knight(pieceColour);
     break;
   case 'B':
-    new_piece = new Bishop(colour);
+    new_piece = new Bishop(pieceColour);
     break;
   case 'Q':
-    new_piece = new Queen(colour);
+    new_piece = new Queen(pieceColour);
     break;
   case 'K':
-    new_piece = new King(colour);
+    new_piece = new King(pieceColour);
     break;
   case 'P':
-    new_piece = new Pawn(colour);
+    new_piece = new Pawn(pieceColour);
     break;
   }
   return new_piece;
 }
 
-void ChessGame::assignKing(const char fen, const int &rowPosition, const int &colPosition)
-  {
-    if (isupper(fen)) {
-      whiteKingPosition.first = rowPosition;
-      whiteKingPosition.second = colPosition;
-      cout << "white king is at position " << whiteKingPosition.first << whiteKingPosition.second << endl;
-    } 
-    else {
-      blackKingPosition.first = rowPosition;
-      blackKingPosition.second = colPosition;
-      cout << "black's king is at position " << blackKingPosition.first << blackKingPosition.second << endl;
-    }
-
- }
-
-
 void ChessGame::assignTurn(const char fen)
 {
   if (fen == 'w')
-    playerToMove = Turn::WHITE;
+    activeColour = Colour::WHITE;
+  else if (fen == 'b')
+    activeColour = Colour::BLACK;
   else
-    playerToMove = Turn::BLACK;
+    cout << "error: fen string does not provide an active colour" << endl;
 }
+
+void ChessGame::assignCastling(const char fen) {
+    // Reset castling rights by default if '-' is encountered
+    if (fen == '-') {
+        whiteCastling = {false, false};
+        blackCastling = {false, false};
+    }
+    else if (isalpha(fen)) {
+        // Use a switch-case to directly map the castling rights
+        switch (fen) {
+            case 'K':
+                // kingside castling
+                whiteCastling.first = true; 
+                break;
+            case 'Q':
+                //queenside castling
+                whiteCastling.second = true; 
+                break;
+            case 'k':
+                blackCastling.first = true; 
+                break;
+            case 'q':
+                blackCastling.second = true; 
+                break;
+        }
+    }
+    else {
+        // If the character is not recognized, reset to no castling rights
+        whiteCastling = {false, false};
+        blackCastling = {false, false};
+    }
+}
+
 
 void ChessGame::submitMove( const char initialPosition[], const char targetPosition[])
 {
@@ -211,7 +250,7 @@ void ChessGame::submitMove( const char initialPosition[], const char targetPosit
   cout << "chess board position " << initialPosition << endl;
 
 
-	cout << "current turn: " << playerToMove << endl;
+	cout << "current turn: " << activeColour << endl;
 
 
 	// check if there is a piece there.
@@ -220,7 +259,7 @@ void ChessGame::submitMove( const char initialPosition[], const char targetPosit
 		return;
 	}
         // check if trying to move a piece of the wrong turn - reword
-    else if ((static_cast<int>(movingPiece->getPieceColour())) != (static_cast<int>(playerToMove))) {
+    else if (movingPiece->getPieceColour() != activeColour) {
           cout << "It is not " << movingPiece->getPieceColour()
 				<< "'s turn to move!" <<endl;
           return;
@@ -252,10 +291,10 @@ void ChessGame::submitMove( const char initialPosition[], const char targetPosit
   if (isIncheck){
     cout << "checking for check mate" << endl;
     if(isCheckmate()){
-      cout << playerToMove << " is in checkmate" << endl;
+      cout << activeColour << " is in checkmate" << endl;
     }
     else { 
-      cout << playerToMove << " is in check" << endl;
+      cout << activeColour << " is in check" << endl;
     }
   } 
   else {
@@ -267,7 +306,7 @@ void ChessGame::submitMove( const char initialPosition[], const char targetPosit
 
   //if check check checkmate and then stalemate. 
  cout << this;
- cout << "current turn changed to: " << playerToMove << "\n" << endl;
+ cout << "current turn changed to: " << activeColour << "\n" << endl;
 
  return;
 
@@ -347,12 +386,6 @@ void ChessGame::undoMove(const int initialRowNumber, const int initialColNumber,
         }
 }
 
-
-
-
-
-
-
 bool ChessGame::isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, const int row, const int col, const int targetRow, const int targetCol, bool & pieceTaken)
 {
 
@@ -397,7 +430,7 @@ if ((pieceTaken == true) &&
 void ChessGame::updateKingPosition(const King* king, const int newRow, const int newCol)
 
 {
-    if (king->getPieceColour() == PieceColour::WHITE) {
+    if (king->getPieceColour() == Colour::WHITE) {
         whiteKingPosition.first = newRow;
         whiteKingPosition.second = newCol;
         cout << " white king is at " << whiteKingPosition.first << whiteKingPosition.second << endl;
@@ -405,17 +438,16 @@ void ChessGame::updateKingPosition(const King* king, const int newRow, const int
         blackKingPosition.first = newRow;
         blackKingPosition.second = newCol;
         cout << " black king is at " << blackKingPosition.first << blackKingPosition.second << endl;
-
     }
 }
 
 bool ChessGame::inCheck() {
-    PieceColour opponentColour = (playerToMove == Turn::WHITE) ? PieceColour::BLACK : PieceColour::WHITE;
+    Colour opponentColour = (activeColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
 
-    cout << opponentColour << " is attacking the king after " << playerToMove << " move " << endl;
+    cout << opponentColour << " is attacking the king after " << activeColour << " move " << endl;
     // Get the position of the current player's King
     int kingRow, kingCol;
-    if (playerToMove == Turn::WHITE) {
+    if (activeColour == Colour::WHITE) {
       kingRow = whiteKingPosition.first;
       kingCol = whiteKingPosition.second;
     } 
@@ -425,10 +457,11 @@ bool ChessGame::inCheck() {
     }
 
     //debugging line
-    cout << playerToMove << "'s king is in position " << kingRow << " " << kingCol << endl;
+    cout << activeColour << "'s king is in position " << kingRow << " " << kingCol << endl;
 
     // If the King's position is invalid, return false (no check can be detected)
     if (kingRow == -1 || kingCol == -1) {
+        cout << "error " << activeColour << "'s king is not on the baord" << endl;
         return false;
     }
 
@@ -458,15 +491,14 @@ bool ChessGame::inCheck() {
 }
 
 bool ChessGame::isCheckmate(){
-  PieceColour pieceColour_ = (playerToMove == Turn::WHITE) ? PieceColour::WHITE : PieceColour::BLACK;
 
-// Try every possible move for pieces of this color
+// Try every possible move for the player in check
   for (int row = 0; row < 8; ++row) {
       for (int col = 0; col < 8; ++col) {
           // Look for pieces of the same colour as the king
           if (chessBoard[row][col] && 
-              chessBoard[row][col]->getPieceColour() == pieceColour_) {
-               cout << chessBoard[row][col]->getPieceName() << " is the same colour as" << pieceColour_ << endl;
+              chessBoard[row][col]->getPieceColour() == activeColour) {
+               cout << chessBoard[row][col]->getPieceName() << " is the same colour as" << activeColour << endl;
 
               // Try moving this piece to every square
               for (int targetRow = 0; targetRow < 8; ++targetRow) {
@@ -494,7 +526,6 @@ bool ChessGame::isCheckmate(){
 
 
 bool ChessGame::isStalemate() {
-    PieceColour pieceColour_ = (playerToMove == Turn::WHITE) ? PieceColour::WHITE : PieceColour::BLACK;
 
     // Check if the king is not in check
     if (inCheck()) {
@@ -506,7 +537,7 @@ bool ChessGame::isStalemate() {
         for (int col = 0; col < 8; ++col) {
             // Look for pieces of the current player's color
             if (chessBoard[row][col] && 
-                chessBoard[row][col]->getPieceColour() == pieceColour_) {
+                chessBoard[row][col]->getPieceColour() == activeColour) {
 
                 // Try moving this piece to every square
                 for (int targetRow = 0; targetRow < 8; ++targetRow) {
@@ -536,7 +567,7 @@ bool ChessGame::isStalemate() {
 
 void ChessGame::switchTurn() 
 {
-  playerToMove = (playerToMove == Turn::WHITE) ? Turn::BLACK : Turn::WHITE;
+  activeColour = (activeColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
 }
 
 

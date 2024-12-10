@@ -1,10 +1,11 @@
-#include "rook.h"
 #include <iostream>
+#include "rook.h"
+#include "colour.h"
 
 
 using namespace std;
 
-Rook::Rook(PieceColour colour): ChessPiece(colour){}
+Rook::Rook(Colour pieceColour) : ChessPiece(pieceColour){}
 
 bool Rook::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const

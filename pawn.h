@@ -1,6 +1,7 @@
 #ifndef PAWN_H
 #define PAWN_H
 #include "chessPiece.h"
+#include "colour.h"
 #include <iostream> //remove
 
 
@@ -10,15 +11,15 @@ class Pawn : public ChessPiece {
 
 public:
 
-    Pawn(PieceColour colour);
+    Pawn(Colour pieceColour);
 
   bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                          const bool isCapture) const override;
 
     const char* getPieceName() const override {
-      if(colour == PieceColour::WHITE){
+      if(pieceColour == Colour::WHITE){
         return "WP";
-      } else if (colour == PieceColour::BLACK) {
+      } else if (pieceColour == Colour::BLACK) {
         return "bp";
         }
         return "Unknown";

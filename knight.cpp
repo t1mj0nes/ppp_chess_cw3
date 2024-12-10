@@ -1,10 +1,11 @@
 #include "knight.h"
+#include "colour.h"
 #include <iostream>
 
 
 using namespace std;
 
-Knight::Knight(PieceColour colour): ChessPiece(colour){}
+Knight::Knight(Colour pieceColour) : ChessPiece(pieceColour){}
 
 bool Knight::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const

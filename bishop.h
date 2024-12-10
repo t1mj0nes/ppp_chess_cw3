@@ -1,21 +1,22 @@
 #ifndef BISHOPcolCounterH
 #define BISHOPcolCounterH
-#include "chessPiece.h"
 #include <iostream> //remove
+#include "colour.h"
+#include "chessPiece.h"
 
 class Bishop : public ChessPiece {
 
 public:
 
-    Bishop(PieceColour colour);
+    Bishop(Colour pieceColour);
 
   bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                          const bool isCapture) const override;
 
     const char* getPieceName() const override {
-      if(colour == PieceColour::WHITE){
+      if(pieceColour == Colour::WHITE){
         return "WB";
-      } else if (colour == PieceColour::BLACK){
+      } else if (pieceColour == Colour::BLACK){
         return "bb";
         }
         return "Unknown";

@@ -1,10 +1,11 @@
-#include "bishop.h"
 #include <iostream>
+#include "colour.h"
+#include "bishop.h"
 
 
 using namespace std;
 
-Bishop::Bishop(PieceColour colour): ChessPiece(colour){
+Bishop::Bishop(Colour pieceColour): ChessPiece(pieceColour){
 }
 
 bool Bishop::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,

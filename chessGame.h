@@ -4,22 +4,9 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 #include "chessPiece.h"
-#include "king.h" //add to makefile
+#include "colour.h"
+#include "king.h" 
 
-
-
-// enum class Castling {NONE, QUEENSIDE, KINGSIDE, BOTH};
-/*feel bitwise operator or something would work better. do I change it to "-, Q,
-  K, QK" as it does in FEN*/
-
-/**
- * @enum colour.
- * @brief Represents the possible colors of a traffic light.
- *
- */
-enum class Turn {BLACK, WHITE};
-
-std::ostream& operator<< ( std::ostream &out, const Turn& turn);
 
 
 class ChessGame {
@@ -41,11 +28,12 @@ class ChessGame {
  private:
 //order these alphabettically or as they are used?
 
-// what is this used for? srename?
-  void assignKing(const char fen, const int &rowPosition, const int &colPosition);
+  void resetGame();
 
   void assignTurn(const char fen);
-  
+
+  void assignCastling(const char fen);
+
   bool isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, const int row, const int col, const int targetRow, const int targetCol, bool & pieceTaken);
   
   bool inCheck();
@@ -65,14 +53,26 @@ class ChessGame {
 
   bool isStalemate();
 
+  bool doesGameNeedToBeReset;  // Flag to track if the game needs to be reset
+
+  bool resetRequired;
+
+  Colour activeColour;
+
   ChessPiece * placePiece(const char fen);
 
-  ChessPiece * chessBoard[8][8]; //temporarily made it a char array
+  ChessPiece * chessBoard[8][8]; 
 
-
-  Turn  playerToMove;
   std::pair<int, int> whiteKingPosition;
+
   std::pair<int, int> blackKingPosition;
+
+  std::pair<bool, bool> whiteCastling;
+
+  std::pair<bool, bool> blackCastling; 
+
+
+
  
 
   // bool GameOver
@@ -81,9 +81,9 @@ class ChessGame {
   */
 
   /*
-  Castling blackCastling; //may need to move this. Does this need to be its own
+  std::pair<bool, bool> blackCastling; //may need to move this. Does this need to be its own
 			  //class etc. 
-  Castling whiteCastling;
+  std::pair<bool, bool> whiteCastling;
 
   G
   */

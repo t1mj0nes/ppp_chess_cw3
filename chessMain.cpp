@@ -13,6 +13,7 @@ int main() {
 	cg.loadState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
 	cout << '\n';
 
+
 	cg.submitMove("D7", "D8");
 	cout << '\n';
 
