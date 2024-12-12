@@ -1,12 +1,24 @@
-//check the order.
-#include <iostream>
-#include <utility>
+/**
+ * @file chessGame.h
+ * 
+ * @brief Defines the chessGame class
+ * 
+ * This file contains the declaration of the chessGame class for handling the 
+ * functionality and the knolwedge of the board. This include validating moves
+ * as being valid or not as well as the state of the game such as whether 
+ * a piece has been taken, whether a player is in check, checkmate or 
+ * stalemate. The file also sets up the game, allowing the user to load a 
+ * chess board in the form of a valid fen string. 
+ */
+
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
+#include <iostream>
+#include <utility>
+
 #include "chessPiece.h"
 #include "colour.h"
 #include "king.h" 
-
 
 
 class ChessGame {
@@ -15,44 +27,51 @@ class ChessGame {
 
   ChessGame();
   
-  void loadState(const char fen[]); //simliar initialisatin to sudoku (i.e. its a char array
+  void loadState(const char fen[]); 
 
-  void submitMove(const char initialPosition[], const char targetPosition[]);
-
-
-  // support function for personal use (Delete later!)
-  friend std::ostream& operator<< ( std::ostream &out, const ChessGame* cg); // refer to safe
+  void submitMove(const char initialPosition[3], const char targetPosition[3]);
 
   virtual ~ChessGame();
 
  private:
-//order these alphabettically or as they are used?
 
   void resetGame();
+
+  ChessPiece * placePiece(const char fen);
 
   void assignTurn(const char fen);
 
   void assignCastling(const char fen);
 
-  bool isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, const int row, const int col, const int targetRow, const int targetCol, bool & pieceTaken);
+  bool isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, 
+                  const int row, const int col, const int targetRow, 
+                  const int targetCol, bool & pieceTaken);
 
-  bool canCastle(int startRow, int startCol, int targetCol, bool pieceTaken, ChessPiece * pieceMove, int & direction);
+  bool validInput(const char move[3]);
 
-  void castlingMove(int row, int col, int targetCol, int & direction, ChessPiece * pieceMoved);
+  bool canCastle(int startRow, int startCol, int targetCol, bool pieceTaken, 
+                ChessPiece * pieceMove, int & direction);
 
+  void castlingMove(int row, int col, int targetCol, int & direction, 
+                    ChessPiece * pieceMoved);
   
   bool inCheck();
 
   void switchTurn();
 
-  bool isBoardClear(const int initialrownumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber);
+  bool isBoardClear(const int initialrownumber, const int initialColNumber, 
+                    const int targetRowNumber, const int targetColNumber);
 
-  void makeMove(const int initialRowNumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber,  ChessPiece *pieceMoved);
+  void makeMove(const int initialRowNumber, const int initialColNumber, 
+                const int targetRowNumber, const int targetColNumber,  
+                ChessPiece *pieceMoved);
 
-  void undoMove(const int initialRowNumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber,  ChessPiece *pieceMoved, ChessPiece *pieceTaken);
+  void undoMove(const int initialRowNumber, const int initialColNumber, 
+                const int targetRowNumber, const int targetColNumber,  
+                ChessPiece *pieceMoved, ChessPiece *pieceTaken);
 
-//CHECK THIS IS FINE
-  void updateKingPosition(const King* king, const int newRow, const int newCol);
+  void updateKingPosition(const King* king, const int newRow, 
+                          const int newCol);
 
   bool isCheckmate();
 
@@ -60,15 +79,15 @@ class ChessGame {
 
   bool resetRequired;
 
-  void updateCastlingRights(int initialRowNumber, int initialColNumber, ChessPiece* pieceMoved);
+  void updateCastlingRights(int initialRowNumber, int initialColNumber,
+                            ChessPiece* pieceMoved);
 
-  void revertCastlingRights(int initialRowNumber, int initialColNumber, ChessPiece* pieceMoved);
+  void revertCastlingRights(int initialRowNumber, int initialColNumber, 
+                                                ChessPiece* pieceMoved);
   
   bool gameOver;
 
   Colour activeColour;
-
-  ChessPiece * placePiece(const char fen);
 
   ChessPiece * chessBoard[8][8]; 
 
@@ -79,23 +98,6 @@ class ChessGame {
   std::pair<bool, bool> whiteCastlingRights;
 
   std::pair<bool, bool> blackCastlingRights; 
-
-
-
- 
-
-  // bool GameOver
-  /* this funciton changes from yes to no when a new game is loaded. It changes from no to yes when checkmate occurs
-    then there is a check in submit move like ("Game over...shake hands with your opponent and accept defeat")
-  */
-
-  /*
-  std::pair<bool, bool> blackCastling; //may need to move this. Does this need to be its own
-			  //class etc. 
-  std::pair<bool, bool> whiteCastling;
-
-  G
-  */
 };
 
 

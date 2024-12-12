@@ -1,47 +1,44 @@
+/**
+ * @file chessGame.cpp
+ * 
+ * @brief IMplements the chessGame class
+ * 
+ * This file contains the implementation for handling the chessGame and the 
+ * corresponding outputs. 
+ */
+
 #include <iostream>
 #include <cstring>
 #include <cctype>
 #include "chessGame.h"
-#include "chessPiece.h"//remove if I have all the other pieces? 
-#include "colour.h"
+#include "chessPiece.h" 
 #include "bishop.h"
 #include "king.h"
 #include "knight.h"
 #include "pawn.h" 
 #include "queen.h"
 #include "rook.h"
-//chessPiece.h will contain the header files for the
-			//individual pieces so this is all I need to bring in?
+#include "colour.h"
+
 
 using namespace std;
 
-
-
-// this is set up for pointers, but it will be letters rather than pointers to positions
-ostream& operator << (ostream &out, const ChessGame * cg) {
-  for (int row = 0; row < 8; row++) {
-    for (int col = 0; col < 8; col++) {
-	if (cg->chessBoard[row][col] != nullptr) {
-	    out << cg->chessBoard[row][col]->getPieceName() << " "; //I will need overloading for the
-					   //pieces output.
-	  }
-	else {
-	    out << " . "; //. instead where nullpointers are.
-	  }
-	  
-      }
-    out << endl;
-    }
-      return out;
-}
-
+/**
+ * ChessGame constructor. 
+ * Acts as a wrapper function around the resetGame method.
+ */
 ChessGame::ChessGame()
 {
+  //resetGame does the heavy lifting.
   resetGame();
 }
-
+/**
+ * whipes the game fresh. 
+ * Is used during initialisation of a new chessGame instance, and if a new game
+ * is loaded into an old chessGame instance, the game is reset
+ */
 void ChessGame::resetGame(){
-
+  //new game, therefore it has not finished.
   gameOver = false;
 
 
@@ -49,7 +46,7 @@ void ChessGame::resetGame(){
   whiteKingPosition = {-1, -1};
   blackKingPosition = {-1, -1};
 
-  // set default to castling not being allowed
+  // set default to castling to not being allowed
   whiteCastlingRights = {false, false};
   blackCastlingRights = {false, false};
 
@@ -67,16 +64,20 @@ void ChessGame::resetGame(){
   resetRequired = false;
 }
 
+/**
+ * loads the fen string into the chessGame
+ */
 void ChessGame::loadState(const char fen[]) 
 {
-
+  //checking if the board has been just been initialised
   if(resetRequired)
   {
     resetGame();
   }
 
-  enum class FenState{PIECE_PLACEMENT, ACTIVE_COLOUR, CASTLING}; //insde the
-								//funciton or not.
+
+  // Flags provide a signa  between the fen string  and game state elements.
+  enum class FenState{PIECE_PLACEMENT, ACTIVE_COLOUR, CASTLING};
   FenState currentState = FenState::PIECE_PLACEMENT;
   //  n is the position within the fen string.
   int n = 0;
@@ -85,6 +86,7 @@ void ChessGame::loadState(const char fen[])
   int rowCounter = 7;
   int colCounter = 7;
 
+  //continue until your reach the end of the fen string. 
   while (fen[n] != '\0') {
       switch (currentState)
 	  {
@@ -94,23 +96,24 @@ void ChessGame::loadState(const char fen[])
         if(isalpha(fen[n])) {
           chessBoard[rowCounter][colCounter] = placePiece(fen[n]);
           if ((fen[n] == 'K') || (fen[n] == 'k')){
-            //this is the same as update king position, so do this step in the placePiece part. 
-            updateKingPosition(static_cast<King*>(chessBoard[rowCounter][colCounter]), rowCounter, colCounter);
+            // King position is stored for improved efficiency for 'check'.
+            updateKingPosition(static_cast<King*>(chessBoard[rowCounter][colCounter]), 
+                              rowCounter, colCounter);
           }
-
+          // move across the board for the next piece
           colCounter--;
           }
-        //if number, empty space
+        //if number, empty spaces equating to the value of the number
         else if (isdigit(fen[n])) {
       int no_empty_space = fen[n] - '0';
       for(int k = 0; k < no_empty_space; k++) {
-          // empty spaces are ignored and kept as null pointers. 
+          // empty spaces are ignored and kept as null pointers.
           colCounter--;
         }
           }
         else if (fen[n] == '/') {
       rowCounter--;
-      //reset column counter
+      //reset column counter as we are moving to a knew row.
       colCounter = 7;
           }
         else if (fen[n] == ' ')  {
@@ -139,21 +142,18 @@ void ChessGame::loadState(const char fen[])
     }
   }
 
-  //new game state has been loaded. If a new game is loaded, the game needs to be reset. 
+  //a fresh game state has been loaded so any new game will require reseting. 
   resetRequired = true;
 
   cout << "A new board state is loaded!" << endl;
-
- //delete
-  cout << this;
 
 }
 
 ChessPiece * ChessGame:: placePiece(const char fen)
 {
-
+  //uppercase letters are white pieces, lowercase are black
   Colour pieceColour = isupper(fen) ? Colour::WHITE : Colour::BLACK;
-
+  
   ChessPiece * new_piece = nullptr;
 
   switch(toupper(fen)){
@@ -185,7 +185,6 @@ void ChessGame::assignTurn(const char fen)
     activeColour = Colour::WHITE;
   else if (fen == 'b')
     activeColour = Colour::BLACK;
-  // assumed that fen string will always be valid, therefore no need to catch edge cases.
 }
 
 void ChessGame::assignCastling(const char fen) {
@@ -195,7 +194,6 @@ void ChessGame::assignCastling(const char fen) {
         blackCastlingRights = {false, false};
     }
     else if (isalpha(fen)) {
-        // Use a switch-case to directly map the castling rights
         switch (fen) {
             case 'K':
                 // kingside castling
@@ -214,22 +212,26 @@ void ChessGame::assignCastling(const char fen) {
         }
     }
     else {
-        // If the character is not recognized, reset to no castling rights
+        // If the character is not recognised, reset to no castling rights
         whiteCastlingRights = {false, false};
         blackCastlingRights = {false, false};
     }
 }
 
 
-void ChessGame::submitMove( const char initialPosition[], const char targetPosition[])
+void ChessGame::submitMove( const char initialPosition[3], 
+                            const char targetPosition[3])
 {
   if (gameOver == true) {
-    //KEEP
+
     cout << "error, game over. Please load in a new game." << endl;
     return;
   }
-//check if these exceed the board, or are smaller then the board and if the move is an uppercase letter followed by a number. 
-// bool validInputs (initialPosition, targetPosition);
+
+if(!validInput(initialPosition) || !validInput(targetPosition)){
+  cout << "Error: provide a valid position on a chess board" << endl;
+  return;
+}
 
 // converting the moves into the corresponding board positions. 
 	int initialRowNumber = initialPosition[1] - '0' - 1;
@@ -247,39 +249,38 @@ void ChessGame::submitMove( const char initialPosition[], const char targetPosit
   		cout << "There is no piece at position " << initialPosition << "!" << endl;
 		return;
 	}
-        // check if trying to move a piece of the wrong turn - reword
+    // check if trying to move a piece of the wrong turn - reword
     else if (movingPiece->getPieceColour() != activeColour) {
           cout << "It is not " << movingPiece->getPieceColour()
-				<< "'s turn to move!" <<endl;
+				       << "'s turn to move!" <<endl;
           return;
     } 
-
-    if (isLegalMove(movingPiece, targetPiece, initialRowNumber, initialColNumber, targetRowNumber, targetColNumber, isCapture)) {
-        cout << activeColour <<"'s " << movingPiece->getPieceName() << " moves from " << initialPosition << " to " << targetPosition << endl;
+    //check if it is a legal move.
+    if (isLegalMove(movingPiece, targetPiece, initialRowNumber, 
+        initialColNumber, targetRowNumber, targetColNumber, isCapture)) {
+        cout << activeColour << "'s " << movingPiece->getPieceName() 
+             << " moves from " << initialPosition << " to " << targetPosition;
         if (isCapture) {
-      // change is it is getPiece type.
+      // add extra print statement for when a capture occurs.
         Colour capturedPieceColour = getOppositeColour(activeColour);
-          cout << "taking " << capturedPieceColour << "'s " <<targetPiece->getPieceName() << endl;
+          cout << " taking " << capturedPieceColour << "'s " 
+               << targetPiece->getPieceName();
           delete targetPiece; // Remove the captured piece from memory
         }
-      
-      cout << "Move successful!" << endl;
-      //update the kings position if necessary
-  
+        cout << endl;
 
       switchTurn();
     }
     else {
-      cout << "invalid move" << endl;
-      //change to be more descriptive.
-      cout << " colours piece cannot move to " << targetPosition << endl;
+      cout << activeColour << "'s " << movingPiece->getPieceName() 
+           << " cannot move from " << initialPosition << " to " 
+           << targetPosition << "!" << endl;
       return;
     }
 
   //check check of opponent
   bool isIncheck = inCheck();
   if (isIncheck){
-    cout << "checking for check mate" << endl;
     if(isCheckmate()){
       cout << activeColour << " is in checkmate" << endl;
       gameOver = true;
@@ -290,59 +291,72 @@ void ChessGame::submitMove( const char initialPosition[], const char targetPosit
   } 
   else {
     if(isStalemate()) {
-      cout << "Stalemate occurs, match drawn" << endl;
+      cout << "Stalemate! Match drawn" << endl;
       gameOver = true;
     }
   }
-
-
-  //if check check checkmate and then stalemate. 
- cout << this;
- cout << "current turn changed to: " << activeColour << "\n" << endl;
-
  return;
+}
+/**
+ * function to confirm the inputs into the submitMove method are valid
+ */
+bool ChessGame::validInput(const char move[3])
+{    //check there aren't more than 2 characters
+     if (move[2] != '\0') {
+        return false;
+    }
+    //Check first character is a vliad column letter (A-H)
+    if (move[0] < 'A' || move[0] > 'H') {
+        return false;
+    }
 
+    // Check if the second character is a valid row number (1-8)
+    if (move[1] < '1' || move[1] > '8') {
+        return false;
+    }
+
+    return true;
 }
 
-bool ChessGame::isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, const int row, const int col, const int targetRow, const int targetCol, bool & pieceTaken)
+
+bool ChessGame::isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, 
+                            const int row, const int col, const int targetRow, 
+                            const int targetCol, bool & pieceTaken)
 {
-
-
 	if (chessBoard[targetRow][targetCol] != nullptr) {
           pieceTaken = true;
         }
         else {
           pieceTaken =false;
         }
-
+// check if the piece taken is the same as the piece being moved.
 if ((pieceTaken == true) &&
         ((pieceMoved->getPieceColour())
          == (chessBoard[targetRow][targetCol]->getPieceColour()))) {
           return false;
 	}
-  //may want to only pass in the absolute differece to these functions as they all seem to need that (as in I do that maths when I'm in them)
 
   // checking if any piece on the board is able to compete the move.
-  if (pieceMoved->isValidPieceMove(row, col, targetRow, targetCol, pieceTaken))  {
+  if (pieceMoved->isValidPieceMove(row, col, targetRow, targetCol, pieceTaken))
+  {
 
-    // using abs targetCol - col so much.    - using something else
     // checking if castling is occuring
     if ((dynamic_cast<King*>(pieceMoved)) && (abs(targetCol - col) == 2)){
-      cout << "piece recognised as a King that is trying to castle" << endl;
       int direction;
       if (!canCastle(row, col, targetCol, pieceTaken, pieceMoved, direction)) {
+        // if castling can't occur it is an invalid move
         return false;
       }
+      // if castling can occur, execute the move
       castlingMove(row, col, targetCol, direction, pieceMoved);
       return true;
     }
 
     // check for all other pieces
     if (!isBoardClear(row, col, targetRow, targetCol)) {
-        // if the board isn't clear between the piece and its target square, move is not valid.
+        // check board is clear between the piece start and target position.
         return false;
     }
-
 
       // piece is able to move so make the move
       makeMove(row, col, targetRow, targetCol, pieceMoved);
@@ -357,15 +371,12 @@ if ((pieceTaken == true) &&
     }
 
   return false;
-
 }
 
 bool ChessGame::isBoardClear(const int initialRowNumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber)
 {
-  // check if i move of a knight, doesn't need to b checkd.
-  //dynamic cast instead? 
- if (((abs(targetRowNumber - initialRowNumber) == 2) && (abs(targetColNumber - initialColNumber) == 1)) || (
-      abs(targetRowNumber - initialRowNumber) == 1 && (abs(targetColNumber - initialColNumber) == 2))) {
+  // If piece is a knight, check is irrelevant as knights can fly. 
+ if (dynamic_cast<Knight*>(chessBoard[initialRowNumber][initialColNumber])){
         return true;
       }
 
@@ -374,11 +385,10 @@ int colDiff = (targetColNumber - initialColNumber);
 
 int rowStep = (rowDiff > 0) ? 1 : -1;
 int colStep = (colDiff > 0) ? 1 : -1;
-// checking if horizontal
+// checking if horizontal route is clear
  if (rowDiff == 0) {
    for (int column = initialColNumber + colStep; column != targetColNumber; column += colStep){
      if (chessBoard[targetRowNumber][column] != nullptr){
-        // cout << "rows not clear" << endl;
         return false;
         }
      }
@@ -389,7 +399,6 @@ int colStep = (colDiff > 0) ? 1 : -1;
  else if (colDiff == 0) {
    for (int row = initialRowNumber + rowStep; row != targetRowNumber; row += rowStep){
      if (chessBoard[row][targetColNumber] != nullptr){
-        // cout << "columns not clear" << endl;
         return false;
         }
      }
@@ -411,54 +420,46 @@ int colStep = (colDiff > 0) ? 1 : -1;
   return true;
 }
 
-bool ChessGame::canCastle(int startRow, int startCol, int targetCol, bool pieceTaken, ChessPiece * pieceMoved, int & direction) {
-  cout << "assessing if " << activeColour << "can castle in the 'canCastle' function" << endl;
-
-  bool castlingQueenside;
+bool ChessGame::canCastle(int startRow, int startCol, int targetCol, 
+                          bool pieceTaken, ChessPiece * pieceMoved, 
+                          int & direction) {
+  //boolean returns true if a queenside castling is occuring.
+  bool castlingQueenSide;
 
   if(pieceTaken){
     // you can't take a piece while trying to castle
     return false;
   }
 
-  // castling queenside when the target colum is less then the kings starting position.
-  castlingQueenside = (startCol > targetCol);
+  // queenside when the target colum is less then the kings starting position.
+  castlingQueenSide = (startCol > targetCol);
   
-  // determine which colour is castling. Pass by reference to direclty modify that attribute.
-  cout << activeColour << endl;
-  std::pair<bool, bool>& colourCastling = (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
-
-  std::cout << "Kingside: " << colourCastling.first 
-          << ", Queenside: " << colourCastling.second << std::endl;
+  // determine which colour is castling.
+  std::pair<bool, bool>& colourCastling = 
+  (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
 
   //check if the king or rook has already moved.
-  if (castlingQueenside) {
+  if (castlingQueenSide) {
       if (!colourCastling.second) {
           // Queenside castling not allowed
-         std::cout << "Queenside castling not allowed!" << std::endl;
-
           return false; 
       }
   } else {
-    cout << "not castling queenside" << endl;
       if (!colourCastling.first) {
           // Kingside castling not allowed
-          std::cout << "Kingside castling not allowed!" << std::endl;
-
           return false; 
       }
   }
 
-cout << "finished checkign previous castling" << endl;
    // Determine the rook's expected position
-    int rookCol = castlingQueenside ? 0 : 7;
+    int rookCol = castlingQueenSide ? 0 : 7;
 
     // Verify the piece at the rook's position is a rook of the same color
     ChessPiece* rook = chessBoard[startRow][rookCol];
-    if (!rook || !dynamic_cast<Rook*>(rook) || rook->getPieceColour() != activeColour) {
+    if (!rook || !dynamic_cast<Rook*>(rook) || 
+        rook->getPieceColour() != activeColour) {
         return false;
     }
-
   
   //Check if all squares between the king and rook are clear
   if(!isBoardClear(startRow, startCol, startRow, rookCol))
@@ -466,44 +467,42 @@ cout << "finished checkign previous castling" << endl;
     return false;
   }
 
-  // check if the king is in check in its current posigion
+  // check if the king is in check in its current position
    if(inCheck()) {
-      //undo the move if invalid
-      cout << "king cannot castle while in check" << endl;
       return false;
     }
-
-    direction = (castlingQueenside) ? -1 : 1;
+    //if castlingQueenSide Kings column position is decrimenting.
+    direction = (castlingQueenSide) ? -1 : 1;
 
 
   // move thorugh the start column until it is not in the final position
-  for (int position = startCol + direction; position != targetCol + direction; position += direction) {
+  for (int position = startCol + direction; position != targetCol + direction; 
+      position += direction) {
     makeMove(startRow, startCol, startRow, position, pieceMoved);
     if (inCheck()) {
           //undo the move if invalid
-          undoMove(startRow, startCol, startRow,  position, pieceMoved, nullptr);
-          cout << "king is attempting to castle across a square in check" << endl;
+          undoMove(startRow, startCol, startRow,  position, pieceMoved, 
+                  nullptr);
           return false;
         }
-    // revert back to the starting state of the board (canCastle doesn't execute the move)
+    // revert back to the starting state of the board.
     undoMove(startRow, startCol, startRow,  position, pieceMoved, nullptr);
-
   }
 
   return true;
-
-
 }  
 
-void ChessGame::makeMove(const int initialRowNumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber, ChessPiece * pieceMoved)
-{
-    
-    
+void ChessGame::makeMove(const int initialRowNumber, 
+                        const int initialColNumber, const int targetRowNumber,
+                        const int targetColNumber, ChessPiece * pieceMoved)
+{ 
     chessBoard[targetRowNumber][targetColNumber] = pieceMoved;
     chessBoard[initialRowNumber][initialColNumber] = nullptr;
 
+  // Have to update kings position and the castling rights
     if(dynamic_cast<King*>(pieceMoved)) {
-      updateKingPosition(dynamic_cast<King*>(pieceMoved), targetRowNumber, targetColNumber);
+      updateKingPosition(dynamic_cast<King*>(pieceMoved), targetRowNumber, 
+                        targetColNumber);
       updateCastlingRights(initialRowNumber, initialColNumber, pieceMoved);
     } else if(dynamic_cast<Rook*>(pieceMoved) ) {
       updateCastlingRights(initialRowNumber, initialColNumber, pieceMoved);
@@ -511,10 +510,13 @@ void ChessGame::makeMove(const int initialRowNumber, const int initialColNumber,
       
 }
 
-void ChessGame::updateCastlingRights(int initialRowNumber, int initialColNumber, ChessPiece* pieceMoved)
+void ChessGame::updateCastlingRights(int initialRowNumber, 
+                                    int initialColNumber, 
+                                    ChessPiece* pieceMoved)
 {
     // Use activeColour to determine which color's castling rights to update
-    std::pair<bool, bool>& colourCastling = (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
+    std::pair<bool, bool>& colourCastling = 
+    (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
 
     // If it's a Rook, increment the move counter
     if (Rook* rook = dynamic_cast<Rook*>(pieceMoved)) {
@@ -530,7 +532,6 @@ void ChessGame::updateCastlingRights(int initialRowNumber, int initialColNumber,
 
     // If it's a King, revoke castling rights
     else if (dynamic_cast<King*>(pieceMoved)) {
-      cout << "king moved, both set to false" << endl;
         colourCastling.first = false;  // Revoke queenside castling
         colourCastling.second = false; // Revoke kingside castling
     }
@@ -538,23 +539,30 @@ void ChessGame::updateCastlingRights(int initialRowNumber, int initialColNumber,
 
 
 
-void ChessGame::undoMove(const int initialRowNumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber,  ChessPiece *pieceMoved, ChessPiece *pieceTaken)
+void ChessGame::undoMove(const int initialRowNumber, 
+                         const int initialColNumber, const int targetRowNumber, 
+                         const int targetColNumber,  ChessPiece *pieceMoved, 
+                         ChessPiece *pieceTaken)
 {
   chessBoard[initialRowNumber][initialColNumber] = pieceMoved;
   chessBoard[targetRowNumber][targetColNumber] = pieceTaken;
-  
+  // Have to update kings position and the castling rights
  if (dynamic_cast<King*>(pieceMoved)) {
-    updateKingPosition(dynamic_cast<King*>(pieceMoved), initialRowNumber, initialColNumber);
+    updateKingPosition(dynamic_cast<King*>(pieceMoved), initialRowNumber, 
+                      initialColNumber);
     revertCastlingRights(initialRowNumber, initialColNumber, pieceMoved);
 } else if (dynamic_cast<Rook*>(pieceMoved)) {
     revertCastlingRights(initialRowNumber, initialColNumber, pieceMoved);
 }
 }
 
-void ChessGame::revertCastlingRights(int initialRowNumber, int initialColNumber, ChessPiece* pieceMoved)
+void ChessGame::revertCastlingRights(int initialRowNumber, 
+                                    int initialColNumber, 
+                                    ChessPiece* pieceMoved)
 {
     // Use activeColour to determine which colour's castling rights to update
-    std::pair<bool, bool>& colourCastling = (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
+    std::pair<bool, bool>& colourCastling = 
+    (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
 
     // If it is a Rook, decrement the move counter, as undoing a move.
     if (Rook* rook = dynamic_cast<Rook*>(pieceMoved)) {
@@ -566,12 +574,10 @@ void ChessGame::revertCastlingRights(int initialRowNumber, int initialColNumber,
             if (initialColNumber == 7) { 
               // Re-enable kingside castling
                 colourCastling.second = true; 
-                cout << activeColour << "queenside castling reverted to true (1)" << endl;
                 // Queenside rook 
             } else if (initialColNumber == 0) { 
               // Re-enable queenside castling
                 colourCastling.first = true; 
-                cout << activeColour << "kingside castling reverted to true (1)" << endl;
             }
         }
     }
@@ -579,21 +585,20 @@ void ChessGame::revertCastlingRights(int initialRowNumber, int initialColNumber,
     else if (dynamic_cast<King*>(pieceMoved)) {
         // Check if the rooks have moved 
         bool kingsideRookNotMoved = false;
-        cout << activeColour << "kingside castling reverted to false (0)" << endl;
 
         bool queensideRookNotMoved = false;
-        cout << activeColour << "queenside castling reverted to false (0))" << endl;
-
 
         // Check the kingside rook (col 7)
-        if (Rook* kingsideRook = dynamic_cast<Rook*>(chessBoard[initialRowNumber][7])) {
+        if (Rook* kingsideRook = 
+            dynamic_cast<Rook*>(chessBoard[initialRowNumber][7])) {
             if (kingsideRook->getMoves() == 0) {
                 kingsideRookNotMoved = true;
             }
         }
 
         // Check the queenside rook (col 0)
-        if (Rook* queensideRook = dynamic_cast<Rook*>(chessBoard[initialRowNumber][0])) {
+        if (Rook* queensideRook = 
+            dynamic_cast<Rook*>(chessBoard[initialRowNumber][0])) {
             if (queensideRook->getMoves() == 0) {
                 queensideRookNotMoved = true;
             }
@@ -608,12 +613,11 @@ void ChessGame::revertCastlingRights(int initialRowNumber, int initialColNumber,
 
 
 
-void ChessGame::castlingMove(int row, int col, int targetCol, int & direction, ChessPiece * pieceMoved) {
+void ChessGame::castlingMove(int row, int col, int targetCol, 
+                            int & direction, ChessPiece * pieceMoved) {
 
   // move king
   makeMove(row, col, row, targetCol, pieceMoved);
-
-    // Move the rook
     
   // Determine rook's target column
   int rookStartCol = (direction == 1) ? 7 : 0; 
@@ -626,24 +630,23 @@ void ChessGame::castlingMove(int row, int col, int targetCol, int & direction, C
 }
 
 
-void ChessGame::updateKingPosition(const King* king, const int newRow, const int newCol)
+void ChessGame::updateKingPosition(const King* king, const int newRow, 
+                                  const int newCol)
 
 {
     if (king->getPieceColour() == Colour::WHITE) {
         whiteKingPosition.first = newRow;
         whiteKingPosition.second = newCol;
-        // cout << " white king is at " << whiteKingPosition.first << whiteKingPosition.second << endl;
     } else {
         blackKingPosition.first = newRow;
         blackKingPosition.second = newCol;
-        //cout << " black king is at " << blackKingPosition.first << blackKingPosition.second << endl;
     }
 }
 
 bool ChessGame::inCheck() {
-    Colour opponentColour = (activeColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
+    Colour opponentColour = 
+    (activeColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
 
-    // cout << opponentColour << " is attacking the king after " << activeColour << " move " << endl;
     // Get the position of the current player's King
     int kingRow, kingCol;
     if (activeColour == Colour::WHITE) {
@@ -655,37 +658,32 @@ bool ChessGame::inCheck() {
       kingCol =  blackKingPosition.second;
     }
 
-    //debugging line
-   // cout << activeColour << "'s king is in position " << kingRow << " " << kingCol << endl;
-
-    // If the King's position is invalid, return false (no check can be detected)
+    // If the King's position is invalid, return false 
     if (kingRow == -1 || kingCol == -1) {
-        cout << "error " << activeColour << "'s king is not on the baord" << endl;
+        cout << "error " << activeColour 
+             << "'s king is not on the baord" << endl;
         return false;
     }
 
-    // Now check if any opponent pieces can attack the current player's King - turn into a helper function if required for check? (underattack.)
+    // Now check if any opponent pieces can attack the current player's King
     for (int row = 0; row < 8; row++) {
         for (int col = 0; col < 8; col++) {
             ChessPiece* piece = chessBoard[row][col];
+            // search for pieces of the oppents colour
             if (piece != nullptr && piece->getPieceColour() == opponentColour) {
                 // Check if this piece can attack the current player's King
-                // cout << "checking for" << piece->getPieceName() << endl;
                 if (piece->isValidPieceMove(row, col, kingRow, kingCol, true)) {
-                // cout << piece->getPieceName() << " valid move " << endl;
-                //cout << "now check if path is clear" << endl;
-
-                    // Check if the path is clear for Rooks, Bishops, or Queens
+                
+                    // Check if the path is clear
                     if (isBoardClear(row, col, kingRow, kingCol)) {
-                      // cout << piece->getPieceName() << " path is clear " << endl;
-
+                        // in check
                         return true; 
                     }
                 }
             }
         }
     }
-
+    // not in check
     return false; 
 }
 
@@ -697,20 +695,21 @@ bool ChessGame::isCheckmate(){
           // Look for pieces of the same colour as the king
           if (chessBoard[row][col] && 
               chessBoard[row][col]->getPieceColour() == activeColour) {
-               // cout << chessBoard[row][col]->getPieceName() << " is the same colour as" << activeColour << endl;
 
               // Try moving this piece to every square
               for (int targetRow = 0; targetRow < 8; ++targetRow) {
                   for (int targetCol = 0; targetCol < 8; ++targetCol) {
                       // Check if this move is legal and resolves the check
-                      ChessPiece* originalTarget = chessBoard[targetRow][targetCol];
+                      ChessPiece* originalTarget 
+                      = chessBoard[targetRow][targetCol];
                       ChessPiece* movingPiece = chessBoard[row][col];
                         //set defaul that no piece is being taken. 
                       bool capture = false;
-                      if (isLegalMove(movingPiece, originalTarget, row, col, targetRow, targetCol, capture)) {
-                          // Legal finds a legal way to get out of chess so implements the move. Therefore it needs to be undone (as it is not the other players turn yet)
-                          undoMove(row, col, targetRow, targetCol, movingPiece, originalTarget);
-                          //cout << "valid move " << row << col << " to " << targetRow << targetCol << endl;
+                      if (isLegalMove(movingPiece, originalTarget, row, col, 
+                                      targetRow, targetCol, capture)) {
+                          // Undo the move as don't want to implement it
+                          undoMove(row, col, targetRow, targetCol, movingPiece, 
+                                   originalTarget);
                               return false;
                           }
                       }
@@ -745,10 +744,11 @@ bool ChessGame::isStalemate() {
                         ChessPiece* movingPiece = chessBoard[row][col];
 
                         bool capture = false;
-                        if (isLegalMove(movingPiece, originalTarget, row, col, targetRow, targetCol, capture)) {
-                            // If there's a legal move, return false (it's not stalemate)
-                            undoMove(row, col, targetRow, targetCol, movingPiece, originalTarget);
-                            //cout << "valid move " << row << col << " to " << targetRow << targetCol << endl;
+                        if (isLegalMove(movingPiece, originalTarget, row, col, 
+                            targetRow, targetCol, capture)) {
+                            // If legal move, return false (not stalemate)
+                            undoMove(row, col, targetRow, targetCol, 
+                                    movingPiece, originalTarget);
                             return false;
                         }
                     }
@@ -761,18 +761,22 @@ bool ChessGame::isStalemate() {
     return true;
 }
 
-
-
 void ChessGame::switchTurn() 
 {
-  activeColour = (activeColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
+  activeColour = 
+  (activeColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
 }
 
-
+/*
+* Chess GAme destructor
+*/
 ChessGame::~ChessGame(){
+  //cycle thorugh the board
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
+      //delete any piece on a position
       delete chessBoard[i][j];
+      //set the position to null.
       chessBoard[i][j] = nullptr;
       }
     }

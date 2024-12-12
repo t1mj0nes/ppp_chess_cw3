@@ -5,8 +5,14 @@
 
 using namespace std;
 
+/**
+ * Bishop constructor
+ */
 Bishop::Bishop(Colour pieceColour): ChessPiece(pieceColour){}
 
+/**
+ * Bishop destructor
+ */
 Bishop::~Bishop(){}
 
 const char* Bishop::getPieceName() const {
@@ -14,14 +20,15 @@ const char* Bishop::getPieceName() const {
       }
 
 
-bool Bishop::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
-                          const bool isCapture) const {
- // Check if the move is diagonal by checking if the absolute differences in rows and columns are equal
+bool Bishop::isValidPieceMove(const int startRow, const int startCol, 
+                              const int targetRow, const int targetCol,
+                              const bool isCapture) const {
+ //  move is diagonal if the absolute differences in rows and columns is 0
     int rowDiff = targetRow - startRow;
     int colDiff = targetCol - startCol;
 
+// not equal, return false. Invalid move
     if (abs(rowDiff) != abs(colDiff)) {
-        //cout << "Invalid move: The move is not diagonal." << endl;
         return false;
     }
     return true;
