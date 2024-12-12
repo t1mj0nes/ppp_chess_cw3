@@ -34,7 +34,7 @@ public:
    */
   Rook(Colour pieceCcolour);
 
-   /**
+  /**
    * @brief Validates whether a move is valid for a rook.
    * 
    * A rook can move any number of squares along a row or column but not 

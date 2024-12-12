@@ -27,19 +27,20 @@ Queen::~Queen(){}
 bool Queen::isValidPieceMove(const int startRow, const int startCol, 
                              const int targetRow, const int targetCol,
                              const bool isCapture) const {
- //  move is diagonal if the absolute differences in rows and columns is 0
-    if (abs(startRow - targetRow) == abs(startCol - targetCol)) {
-        return true;
-    }
+
+  //  move is diagonal if the absolute differences in rows and columns is 0
+  if (abs(startRow - targetRow) == abs(startCol - targetCol)) {
+    return true;
+  }
     
-    // valid vertical or horizontal move if rows or columns don't change.
-    if (startRow == targetRow || startCol == targetCol) {
-        return true;
-    }
+  // valid vertical or horizontal move if rows or columns don't change.
+  if (startRow == targetRow || startCol == targetCol) {
+    return true;
+  }
     
-    return false;
+  return false;
 }  
 
 const char* Queen::getPieceName() const {
-    return "Queen";
-    }
+  return "Queen";
+}

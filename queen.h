@@ -57,8 +57,8 @@ public:
    */
   ~Queen() override;
 
-  private:
-    // No specific members for Queen class, but can be extended in future.
+private:
+  // No specific members for Queen class, but can be extended in future.
 
 };
 

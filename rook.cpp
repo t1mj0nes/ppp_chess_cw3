@@ -25,29 +25,29 @@ Rook::~Rook(){}
 bool Rook::isValidPieceMove(const int startRow, 
                             const int startCol, const int targetRow, 
                             const int targetCol, const bool isCapture) const {
-    // valid vertical or horizontal move if rows or columns don't change.
-    if (targetRow == startRow|| targetCol == startCol) {
-        return true;
-    }
-    return false;
+  // valid vertical or horizontal move if rows or columns don't change.
+  if (targetRow == startRow|| targetCol == startCol) {
+    return true;
+  }
+  return false;
 }
 
- const char* Rook::getPieceName() const {
-    return "Rook";
+const char* Rook::getPieceName() const {
+  return "Rook";
 }
 
 
 void Rook::incrementCounter(){
-    moves++;
+  moves++;
 }
 
 void Rook::decrementCounter(){
-    // a rook can't have made negative moves.
-    if (moves > 0)
+  // a rook can't have made negative moves.
+  if (moves > 0)
     moves--;
 }
 
 int Rook::getMoves() const{
-    return moves;
+  return moves;
 
 }

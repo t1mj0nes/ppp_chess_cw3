@@ -25,20 +25,20 @@ Bishop::Bishop(Colour pieceColour): ChessPiece(pieceColour){}
 Bishop::~Bishop(){}
 
 const char* Bishop::getPieceName() const {
-        return "Bishop";
-      }
+  return "Bishop";
+}
 
 
 bool Bishop::isValidPieceMove(const int startRow, const int startCol, 
                               const int targetRow, const int targetCol,
                               const bool isCapture) const {
- //  move is diagonal if the absolute differences in rows and columns is 0
-    int rowDiff = targetRow - startRow;
-    int colDiff = targetCol - startCol;
+  //  move is diagonal if the absolute differences in rows and columns is 0
+  int rowDiff = targetRow - startRow;
+  int colDiff = targetCol - startCol;
 
-// not equal, return false. Invalid move
-    if (abs(rowDiff) != abs(colDiff)) {
-        return false;
-    }
-    return true;
+  // not equal, return false. Invalid move
+  if (abs(rowDiff) != abs(colDiff)) {
+    return false;
+  }
+  return true;
 }

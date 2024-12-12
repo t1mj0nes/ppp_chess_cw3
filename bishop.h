@@ -25,12 +25,12 @@
 class Bishop : public ChessPiece {
 
 public:
- /**
+  /**
    * @brief Constructs a Bishop with a given colour.
    * 
    * @param pieceColour The colour of the bishop (either `Colour::WHITE` or
    `Colour::BLACK`).
-   */
+  */
   Bishop(Colour pieceColour);
   /**
    * @brief Validates whether a move for the bishop is legal.
@@ -48,7 +48,7 @@ public:
    */
   bool isValidPieceMove(const int startRow, const int startCol, 
                         const int targetRow, const int targetCol,
-                         const bool isCapture) const override;
+			const bool isCapture) const override;
 
   /**
    * @brief Gets the name of the piece.

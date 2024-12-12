@@ -34,20 +34,20 @@ public:
    */
   Pawn(Colour pieceColour);
 
-/**
- * @brief Validates whether a move is valid for a pawn.
- * 
- * A pawn can move one square forward, two squares forward from its starting 
- * position, or capture diagonally. 
- * 
- * @param startRow The starting row of the move.
- * @param startCol The starting column of the move.
- * @param targetRow The target row of the move.
- * @param targetCol The target column of the move.
- * @param isCapture Indicates whether the move is a capture, therefore allowing
- *                  the pawn to move diagonally.
- * @return `true` if the move is valid for a pawn; `false` otherwise.
- */
+  /**
+   * @brief Validates whether a move is valid for a pawn.
+   * 
+   * A pawn can move one square forward, two squares forward from its starting 
+   * position, or capture diagonally. 
+   * 
+   * @param startRow The starting row of the move.
+   * @param startCol The starting column of the move.
+   * @param targetRow The target row of the move.
+   * @param targetCol The target column of the move.
+   * @param isCapture Indicates whether the move is a capture, therefore allowing
+   *                  the pawn to move diagonally.
+   * @return `true` if the move is valid for a pawn; `false` otherwise.
+   */
   bool isValidPieceMove(const int startRow, const int startCol, 
                         const int targetRow, const int targetCol,
                         const bool isCapture) const override;
@@ -60,9 +60,9 @@ public:
   const char* getPieceName() const override;
 
   /**
-    * @brief Destructor for the `Pawn` class.
-    */
-~Pawn() override;
+   * @brief Destructor for the `Pawn` class.
+   */
+  ~Pawn() override;
 
 };
 

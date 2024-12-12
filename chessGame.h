@@ -34,11 +34,11 @@
  */
 class ChessGame {
 
- public:
+public:
 
   ChessGame();
   
-   /**
+  /**
    * @brief Loads the chess game state from a FEN string.
    * 
    * This method parses the given FEN string to set up the chessboard and piece 
@@ -68,7 +68,7 @@ class ChessGame {
    */
   virtual ~ChessGame();
 
- private:
+private:
 
   /** 
    * @brief Resets the game to its initial state.
@@ -110,7 +110,7 @@ class ChessGame {
 
   void assignCastling(const char fen);
 
-    /**
+  /**
    * @brief Validates the input move.
    * 
    * This method checks if the given move is in a valid format (e.g., "E2").
@@ -141,8 +141,8 @@ class ChessGame {
    * @return `true` if the move is legal, otherwise `false`.
    */
   bool isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, 
-                  const int row, const int col, const int targetRow, 
-                  const int targetCol, bool & pieceTaken);
+		   const int row, const int col, const int targetRow, 
+		   const int targetCol, bool & pieceTaken);
 
 
 
@@ -163,7 +163,7 @@ class ChessGame {
    * @return `true` if castling is allowed, otherwise `false`.
    */
   bool canCastle(int startRow, int startCol, int targetCol, bool pieceTaken, 
-                ChessPiece * pieceMove, int & direction);
+		 ChessPiece * pieceMove, int & direction);
 
   /**
    * @brief Executes the castling move.
@@ -180,33 +180,33 @@ class ChessGame {
   void castlingMove(int row, int col, int targetCol, int & direction, 
                     ChessPiece * pieceMoved);
 
-/**
- * @brief Updates the castling rights of the current player.
- * 
- * This method is called after a move is made to update the castling rights 
- * of the player. It disables castling rights for the current player if 
- * the king or rook has moved.
- * 
- * @param initialRowNumber The starting row of the piece that was moved.
- * @param initialColNumber The starting column of the piece that was moved.
- * @param pieceMoved A pointer to the piece that was moved.
- */
+  /**
+   * @brief Updates the castling rights of the current player.
+   * 
+   * This method is called after a move is made to update the castling rights 
+   * of the player. It disables castling rights for the current player if 
+   * the king or rook has moved.
+   * 
+   * @param initialRowNumber The starting row of the piece that was moved.
+   * @param initialColNumber The starting column of the piece that was moved.
+   * @param pieceMoved A pointer to the piece that was moved.
+   */
   void updateCastlingRights(int initialRowNumber, int initialColNumber,
                             ChessPiece* pieceMoved);
 
-/**
- * @brief Reverts the castling rights to their previous state.
- * 
- * This method is called when undoing a move, restoring the castling rights 
- * of the current player to their state prior to the move. It ensures that 
- * castling rights are accurately maintained after a move is undone.
- * 
- * @param initialRowNumber The starting row of the piece that was moved.
- * @param initialColNumber The starting column of the piece that was moved.
- * @param pieceMoved A pointer to the piece that was moved.
- */
+  /**
+   * @brief Reverts the castling rights to their previous state.
+   * 
+   * This method is called when undoing a move, restoring the castling rights 
+   * of the current player to their state prior to the move. It ensures that 
+   * castling rights are accurately maintained after a move is undone.
+   * 
+   * @param initialRowNumber The starting row of the piece that was moved.
+   * @param initialColNumber The starting column of the piece that was moved.
+   * @param pieceMoved A pointer to the piece that was moved.
+   */
   void revertCastlingRights(int initialRowNumber, int initialColNumber, 
-                                                ChessPiece* pieceMoved);
+			    ChessPiece* pieceMoved);
   
   /**
    * @brief Switches the turn between players.
@@ -216,7 +216,7 @@ class ChessGame {
    */
   void switchTurn();
    
-   /**
+  /**
    * @brief Checks if the path between two squares is clear of pieces.
    * 
    * This method checks whether there are any pieces blocking the path between
@@ -232,23 +232,23 @@ class ChessGame {
   bool isBoardClear(const int initialrownumber, const int initialColNumber, 
                     const int targetRowNumber, const int targetColNumber);
 
-/**
- * @brief Makes the move on the board.
- * 
- * This method updates the board state by moving a piece from one square to
- * another. It also handles the case where a piece is captured.
- * 
- * @param initialRowNumber The starting row.
- * @param initialColNumber The starting column.
- * @param targetRowNumber The target row.
- * @param targetColNumber The target column.
- * @param pieceMoved The piece being moved.
- */
+  /**
+   * @brief Makes the move on the board.
+   * 
+   * This method updates the board state by moving a piece from one square to
+   * another. It also handles the case where a piece is captured.
+   * 
+   * @param initialRowNumber The starting row.
+   * @param initialColNumber The starting column.
+   * @param targetRowNumber The target row.
+   * @param targetColNumber The target column.
+   * @param pieceMoved The piece being moved.
+   */
   void makeMove(const int initialRowNumber, const int initialColNumber, 
                 const int targetRowNumber, const int targetColNumber,  
                 ChessPiece *pieceMoved);
 
- /**
+  /**
    * @brief Undoes the last move.
    * 
    * This method restores the game to its state before the last move, reversing
@@ -277,7 +277,7 @@ class ChessGame {
   void updateKingPosition(const King* king, const int newRow, 
                           const int newCol);
 
- /**
+  /**
    * @brief Checks if the current player is in check.
    * 
    * This method determines if the current player has their king in check.
@@ -295,7 +295,7 @@ class ChessGame {
    */
   bool isCheckmate();
 
-   /**
+  /**
    * @brief Checks if the game is in a stalemate state.
    * 
    * This method determines if the current player is in stalemate.

@@ -30,7 +30,7 @@ public:
    * 
    * @param pieceColour The colour of the piece (`Colour::WHITE` or
    `Colour::BLACK`).
-   */
+  */
   ChessPiece(Colour pieceColour);
 
   /**
@@ -78,8 +78,8 @@ public:
   virtual ~ChessPiece();
 
 protected:
-    // The colour of the chess piece (either white or black)
-   Colour pieceColour;
+  // The colour of the chess piece (either white or black)
+  Colour pieceColour;
 
 };
 
