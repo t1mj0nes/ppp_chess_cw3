@@ -1,4 +1,13 @@
-#include <iostream>
+/**
+ * @file bishop.cpp
+ * 
+ * @brief Implements the Bishop class
+ * 
+ * This file contains the implementation for handling the bihsop class. 
+ * In particular, its constuctor, destructo and whether two inputs are valid 
+ * for a bishop piece. 
+ */
+
 #include "colour.h"
 #include "bishop.h"
 

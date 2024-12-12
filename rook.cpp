@@ -1,4 +1,11 @@
-#include <iostream>
+/**
+ * @file rook.cpp
+ * 
+ * @brief Implementation of the Rook class, derived from the ChessPiece class. 
+ *        It provides the specific functionality of a rook, such as movement 
+ *        validation and tracking the number of moves for castling rights.
+ */
+
 #include "rook.h"
 #include "colour.h"
 

@@ -1,6 +1,12 @@
+/**
+ * @file knight.cpp
+ * 
+ * @brief Implementation of the knight class, derived from the ChessPiece class. 
+ *        It provides the specific functionality of a knight, such as movement 
+ *        validation.
+ */
 #include "knight.h"
 #include "colour.h"
-#include <iostream>
 
 
 using namespace std;

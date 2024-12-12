@@ -1,5 +1,11 @@
+/**
+ * @file king.cpp
+ * 
+ * @brief Implementation of the king class, derived from the ChessPiece class. 
+ *        It provides the specific functionality of a king, such as movement 
+ *        validations.
+ */
 #include "king.h"
-#include <iostream>
 
 
 using namespace std;

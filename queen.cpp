@@ -1,6 +1,15 @@
+/**
+ * @file queen.cpp
+ * 
+ * @brief Implements the Queen class
+ * 
+ * This file contains the implementation for handling the queen class. 
+ * In particular, its constuctor, destructo and whether two inputs are valid 
+ * for a queen pieces. 
+ */
+
 #include "queen.h"
 #include "colour.h"
-#include <iostream>
 
 
 using namespace std;

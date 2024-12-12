@@ -1,3 +1,11 @@
+/**
+ * @file chesPiece.cpp
+ * 
+ * @brief Implementation of the ChessPiece class, which serves as a 
+ *        base class for all chess pieces. It provides common functionality
+ *        such as colour management.
+ */
+
 #include "chessPiece.h"
 #include "colour.h"
 

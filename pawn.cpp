@@ -1,4 +1,10 @@
-#include <iostream>
+/**
+ * @file pawn.cpp
+ * 
+ * @brief Implementation of the knight class, derived from the ChessPiece class. 
+ *        It provides the specific functionality of a pawn, such as movement 
+ *        validation for normal moves, moves of two spaces and captures..
+ */
 #include <cmath>
 #include "pawn.h"
 #include "colour.h"

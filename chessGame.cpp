@@ -1,7 +1,7 @@
 /**
  * @file chessGame.cpp
  * 
- * @brief IMplements the chessGame class
+ * @brief Implements the chessGame class
  * 
  * This file contains the implementation for handling the chessGame and the 
  * corresponding outputs. 
@@ -23,20 +23,14 @@
 
 using namespace std;
 
-/**
- * ChessGame constructor. 
- * Acts as a wrapper function around the resetGame method.
- */
+//chessGame Constructor.
 ChessGame::ChessGame()
 {
   //resetGame does the heavy lifting.
   resetGame();
 }
-/**
- * whipes the game fresh. 
- * Is used during initialisation of a new chessGame instance, and if a new game
- * is loaded into an old chessGame instance, the game is reset
- */
+
+
 void ChessGame::resetGame(){
   //new game, therefore it has not finished.
   gameOver = false;
@@ -64,9 +58,7 @@ void ChessGame::resetGame(){
   resetRequired = false;
 }
 
-/**
- * loads the fen string into the chessGame
- */
+ //loads the fen string into the chessGame
 void ChessGame::loadState(const char fen[]) 
 {
   //checking if the board has been just been initialised
@@ -454,7 +446,7 @@ bool ChessGame::canCastle(int startRow, int startCol, int targetCol,
    // Determine the rook's expected position
     int rookCol = castlingQueenSide ? 0 : 7;
 
-    // Verify the piece at the rook's position is a rook of the same color
+    // Verify the piece at the rook's position is a rook of the same colour
     ChessPiece* rook = chessBoard[startRow][rookCol];
     if (!rook || !dynamic_cast<Rook*>(rook) || 
         rook->getPieceColour() != activeColour) {
@@ -514,7 +506,7 @@ void ChessGame::updateCastlingRights(int initialRowNumber,
                                     int initialColNumber, 
                                     ChessPiece* pieceMoved)
 {
-    // Use activeColour to determine which color's castling rights to update
+    // Use activeColour to determine which colour's castling rights to update
     std::pair<bool, bool>& colourCastling = 
     (activeColour == Colour::WHITE) ? whiteCastlingRights : blackCastlingRights;
 
@@ -729,10 +721,10 @@ bool ChessGame::isStalemate() {
         return false; // If the king is in check, it's not stalemate
     }
 
-    // Try every possible move for pieces of the current player's color
+    // Try every possible move for pieces of the current player's colour
     for (int row = 0; row < 8; ++row) {
         for (int col = 0; col < 8; ++col) {
-            // Look for pieces of the current player's color
+            // Look for pieces of the current player's colour
             if (chessBoard[row][col] && 
                 chessBoard[row][col]->getPieceColour() == activeColour) {
 
@@ -768,7 +760,7 @@ void ChessGame::switchTurn()
 }
 
 /*
-* Chess GAme destructor
+* Chess Game destructor
 */
 ChessGame::~ChessGame(){
   //cycle thorugh the board
