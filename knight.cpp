@@ -7,6 +7,13 @@ using namespace std;
 
 Knight::Knight(Colour pieceColour) : ChessPiece(pieceColour){}
 
+Knight::~Knight(){}
+
+const char* Knight::getPieceName() const  {
+        return "Knight";
+      }
+
+
 bool Knight::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const
   {

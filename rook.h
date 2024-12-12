@@ -9,22 +9,24 @@ class Rook : public ChessPiece {
 
 public:
 
-    Rook(Colour pieceCcolour);
+  Rook(Colour pieceCcolour);
 
-   bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
+  bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const override;
-    const char* getPieceName() const override {
-      if(pieceColour == Colour::WHITE){
-        return "WR";
-      } else if (pieceColour == Colour::BLACK){
-        return "br";
-        }
-        return "Unknown";
-      }
 
-      ~Rook() override{
-        std::cout << "Destructor Rook" << std::endl;
-        }
+  const char* getPieceName() const override;
+
+  void incrementCounter();
+
+  void decrementCounter();
+
+  int getMoves() const;
+
+  ~Rook() override;
+
+  private: 
+  //tracks the number of moves the rook has made. Necessary for castling. 
+  int moves = 0;
 };
 
 #endif

@@ -8,6 +8,12 @@ using namespace std;
 
 Pawn::Pawn(Colour pieceColour): ChessPiece(pieceColour){}
 
+Pawn::~Pawn(){}
+
+const char* Pawn::getPieceName() const {
+        return "Pawn";
+      }
+
 bool Pawn::isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const
   {

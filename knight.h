@@ -12,18 +12,10 @@ public:
 
    bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                           const bool isCapture) const override;
-    const char* getPieceName() const override {
-      if(pieceColour == Colour::WHITE){
-        return "WN";
-      } else if (pieceColour == Colour::BLACK){
-        return "bn";
-        }
-        return "Unknown";
-      }
+    
+    const char* getPieceName() const override;
 
-    ~Knight() override{
-        std::cout << "Destructor Knight" << std::endl;
-        }
+    ~Knight() override;
 
 };
 

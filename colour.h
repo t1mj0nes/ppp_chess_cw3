@@ -12,4 +12,6 @@ enum class Colour {BLACK, WHITE};
 
 std::ostream& operator<< ( std::ostream &out, const Colour& colour);
 
+Colour getOppositeColour(Colour currentColour);
+
 #endif

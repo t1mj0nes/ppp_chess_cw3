@@ -35,6 +35,11 @@ class ChessGame {
   void assignCastling(const char fen);
 
   bool isLegalMove(ChessPiece * pieceMoved, ChessPiece * targetPiece, const int row, const int col, const int targetRow, const int targetCol, bool & pieceTaken);
+
+  bool canCastle(int startRow, int startCol, int targetCol, bool pieceTaken, ChessPiece * pieceMove, int & direction);
+
+  void castlingMove(int row, int col, int targetCol, int & direction, ChessPiece * pieceMoved);
+
   
   bool inCheck();
 
@@ -53,9 +58,13 @@ class ChessGame {
 
   bool isStalemate();
 
-  bool doesGameNeedToBeReset;  // Flag to track if the game needs to be reset
-
   bool resetRequired;
+
+  void updateCastlingRights(int initialRowNumber, int initialColNumber, ChessPiece* pieceMoved);
+
+  void revertCastlingRights(int initialRowNumber, int initialColNumber, ChessPiece* pieceMoved);
+  
+  bool gameOver;
 
   Colour activeColour;
 
@@ -67,9 +76,9 @@ class ChessGame {
 
   std::pair<int, int> blackKingPosition;
 
-  std::pair<bool, bool> whiteCastling;
+  std::pair<bool, bool> whiteCastlingRights;
 
-  std::pair<bool, bool> blackCastling; 
+  std::pair<bool, bool> blackCastlingRights; 
 
 
 

@@ -8,24 +8,14 @@ class Bishop : public ChessPiece {
 
 public:
 
-    Bishop(Colour pieceColour);
+  Bishop(Colour pieceColour);
 
   bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                          const bool isCapture) const override;
 
-    const char* getPieceName() const override {
-      if(pieceColour == Colour::WHITE){
-        return "WB";
-      } else if (pieceColour == Colour::BLACK){
-        return "bb";
-        }
-        return "Unknown";
-      }
+  const char* getPieceName() const override;
 
-  //all destructos should be virtual?
-  virtual ~Bishop() override{
-    std::cout << "Destructor Bishop" << std::endl;
-    }
+  ~Bishop() override;
 
 };
 

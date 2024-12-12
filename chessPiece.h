@@ -17,9 +17,7 @@ public:
 
   const Colour getPieceColour() const;
 
-  virtual ~ChessPiece(){
-    std::cout << "chessPiece destructor called" << std::endl;
-  }
+  virtual ~ChessPiece();
 
 protected:
    Colour pieceColour;

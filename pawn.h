@@ -16,20 +16,9 @@ public:
   bool isValidPieceMove(const int startRow, const int startCol, const int targetRow, const int targetCol,
                          const bool isCapture) const override;
 
-    const char* getPieceName() const override {
-      if(pieceColour == Colour::WHITE){
-        return "WP";
-      } else if (pieceColour == Colour::BLACK) {
-        return "bp";
-        }
-        return "Unknown";
+    const char* getPieceName() const override;
 
-      }
-
-
-  ~Pawn() override{
-  std::cout << "Destructor Pawn" << std::endl;
-  }
+  ~Pawn() override;
 
 };
 

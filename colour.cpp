@@ -3,9 +3,13 @@
 std::ostream& operator<< ( std::ostream &out, const Colour& colour)
 {
  if(colour == Colour::BLACK){
-  out << "BLACK";
+  out << "Black";
  } else {
-  out << "WHITE";
+  out << "White";
  }
  return out;
+}
+
+Colour getOppositeColour(Colour currentColour){
+    return(currentColour == Colour::WHITE) ? Colour::BLACK : Colour::WHITE;
 }
