@@ -5,13 +5,13 @@
 using std::cout;
 
 int main() {
+  
 	cout << "========================\n";
 	cout << "Testing the Chess Engine\n";
 	cout << "========================\n\n";
 
 	ChessGame cg;
-	
-	cg.loadState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
+       	cg.loadState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
 	cout << '\n';
 
 	cg.submitMove("D7", "D8");
