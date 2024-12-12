@@ -28,7 +28,8 @@ public:
   /**
    * @brief Constructs a chess piece with a specified colour.
    * 
-   * @param pieceColour The colour of the piece (`Colour::WHITE` or `Colour::BLACK`).
+   * @param pieceColour The colour of the piece (`Colour::WHITE` or
+   `Colour::BLACK`).
    */
   ChessPiece(Colour pieceColour);
 

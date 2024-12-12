@@ -32,7 +32,8 @@ enum class Colour {BLACK, WHITE};
  * This operator converts a `Colour` enum value into its textual representation 
  * ("Black" or "White") for easy output to an output stream.
  * 
- * @param out The output stream where the textual representation will be written.
+ * @param out The output stream where the textual representation will be
+ *            written.
  * @param colour The `Colour` enum value to be converted to text.
  * @return A reference to the modified output stream.
  */
@@ -41,7 +42,8 @@ std::ostream& operator<< ( std::ostream &out, const Colour& colour);
 /**
  * @brief Returns the opposite colour of the given `Colour`.
  * 
- * This utility function is used to determine the opposing colour in chess logic. 
+ * This utility function is used to determine the opposing colour in chess
+ * logic. 
  * If the input is `Colour::WHITE`, the function returns `Colour::BLACK`, and
  * vice versa.
  * 

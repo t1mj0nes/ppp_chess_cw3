@@ -29,7 +29,8 @@ public:
     /**
      * @brief Constructs a king with a specified colour.
      * 
-     * @param pieceColour The colour of the king (`Colour::WHITE` or `Colour::BLACK`).
+     * @param pieceColour The colour of the king (`Colour::WHITE` or
+     * `Colour::BLACK`).
      */
    King(Colour pieceColour);
 

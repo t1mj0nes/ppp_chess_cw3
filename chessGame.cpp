@@ -89,7 +89,8 @@ void ChessGame::loadState(const char fen[])
           chessBoard[rowCounter][colCounter] = placePiece(fen[n]);
           if ((fen[n] == 'K') || (fen[n] == 'k')){
             // King position is stored for improved efficiency for 'check'.
-            updateKingPosition(static_cast<King*>(chessBoard[rowCounter][colCounter]), 
+            updateKingPosition(static_cast<King*>
+			       (chessBoard[rowCounter][colCounter]), 
                               rowCounter, colCounter);
           }
           // move across the board for the next piece
@@ -238,7 +239,8 @@ if(!validInput(initialPosition) || !validInput(targetPosition)){
 
 	// check if there is a piece there.
 	if (movingPiece== nullptr) {
-  		cout << "There is no piece at position " << initialPosition << "!" << endl;
+  		cout << "There is no piece at position " << initialPosition
+		     << "!" << endl;
 		return;
 	}
     // check if trying to move a piece of the wrong turn - reword
@@ -365,7 +367,10 @@ if ((pieceTaken == true) &&
   return false;
 }
 
-bool ChessGame::isBoardClear(const int initialRowNumber, const int initialColNumber, const int targetRowNumber, const int targetColNumber)
+bool ChessGame::isBoardClear(const int initialRowNumber,
+			     const int initialColNumber,
+			     const int targetRowNumber,
+			     const int targetColNumber)
 {
   // If piece is a knight, check is irrelevant as knights can fly. 
  if (dynamic_cast<Knight*>(chessBoard[initialRowNumber][initialColNumber])){
@@ -379,7 +384,8 @@ int rowStep = (rowDiff > 0) ? 1 : -1;
 int colStep = (colDiff > 0) ? 1 : -1;
 // checking if horizontal route is clear
  if (rowDiff == 0) {
-   for (int column = initialColNumber + colStep; column != targetColNumber; column += colStep){
+   for (int column = initialColNumber + colStep; column !=
+	  targetColNumber; column += colStep){
      if (chessBoard[targetRowNumber][column] != nullptr){
         return false;
         }
@@ -389,7 +395,8 @@ int colStep = (colDiff > 0) ? 1 : -1;
  }
  //checking if vertical path is clear
  else if (colDiff == 0) {
-   for (int row = initialRowNumber + rowStep; row != targetRowNumber; row += rowStep){
+   for (int row = initialRowNumber + rowStep; row != targetRowNumber;
+	row += rowStep){
      if (chessBoard[row][targetColNumber] != nullptr){
         return false;
         }
@@ -732,7 +739,8 @@ bool ChessGame::isStalemate() {
                 for (int targetRow = 0; targetRow < 8; ++targetRow) {
                     for (int targetCol = 0; targetCol < 8; ++targetCol) {
                         // Check if this move is legal
-                        ChessPiece* originalTarget = chessBoard[targetRow][targetCol];
+                        ChessPiece* originalTarget =
+			  chessBoard[targetRow][targetCol];
                         ChessPiece* movingPiece = chessBoard[row][col];
 
                         bool capture = false;
@@ -773,14 +781,5 @@ ChessGame::~ChessGame(){
       }
     }
   }
-
-
-
-
-
-
-
-
-
 
 

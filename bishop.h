@@ -28,10 +28,11 @@ public:
  /**
    * @brief Constructs a Bishop with a given colour.
    * 
-   * @param pieceColour The colour of the bishop (either `Colour::WHITE` or `Colour::BLACK`).
+   * @param pieceColour The colour of the bishop (either `Colour::WHITE` or
+   `Colour::BLACK`).
    */
   Bishop(Colour pieceColour);
-/**
+  /**
    * @brief Validates whether a move for the bishop is legal.
    * 
    * Bishops move diagonally, and this method checks whether the target position
@@ -49,16 +50,17 @@ public:
                         const int targetRow, const int targetCol,
                          const bool isCapture) const override;
 
- /**
+  /**
    * @brief Gets the name of the piece.
    * 
-   * This method returns a string representing the name of the piece, which is "Bishop".
+   * This method returns a string representing the name of the piece, which is
+   " Bishop".
    * 
    * @return A string literal `"Bishop"`.
    */
   const char* getPieceName() const override;
 
-/**
+  /**
    * @brief Destructor for the `Bishop` class.
    * 
    * The destructor is overridden to ensure proper cleanup of the `Bishop` 

@@ -70,7 +70,8 @@ public:
   /**
    * @brief Decrements the rook's move counter.
    * 
-   * Ensures the counter does not become negative. This is used for undoing moves.
+   * Ensures the counter does not become negative. This is used for undoing
+   * moves.
    */
   void decrementCounter();
 
